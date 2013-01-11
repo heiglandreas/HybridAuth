@@ -1,8 +1,8 @@
 {
     "name" : "org_heigl/hybridauth", 
     "type" : "library",
-    "description" : "Login using the hybridauth-library",
-    "keywords" : [ "login","social network","user", "twitter", "facebook", "github"],
+    "description" : "Lightweight Authentication Module for Zend-Framework 2 using the hybridauth-library",
+    "keywords" : [ "login","social network","user", "twitter", "facebook", "github", "zf2", "module"],
     "homepage" : "http://github.com/heiglandreas/OrgHeiglHybridAuth",
     "license" : "MIT",
     "authors" : [
