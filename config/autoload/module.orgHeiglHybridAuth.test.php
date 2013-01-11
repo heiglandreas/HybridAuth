@@ -40,5 +40,5 @@ return array('OrgHeiglHybridAuth' => array(
         'debug_file' => __DIR__ . '/hybrid_auth.log',
     ),
     'backend' => 'twitter',
-
+    'session_name' => 'orgheiglhybridauth',
 ));
