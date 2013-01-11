@@ -52,8 +52,6 @@ return array(
                             'options' => array(
                                 'route' => '/login',
                                 'defaults' => array(
-                                    '__NAMESPACE__' => 'OrgHeiglHybridAuth\Controller',
-                                    'controller'    => 'IndexController',
                                     'action'        => 'login',
                                 ),
                             ),
@@ -63,9 +61,16 @@ return array(
                             'options' => array(
                                 'route' => '/logout',
                                 'defaults' => array(
-                                    '__NAMESPACE__' => 'OrgHeiglHybridAuth\Controller',
-                                    'controller'    => 'IndexController',
-                                    'action'        => 'logout',
+                                     'action'        => 'logout',
+                                ),
+                            ),
+                        ),
+                        'backend' => array(
+                            'type' => 'Literal',
+                            'options' => array(
+                                'route' => '/backend',
+                                'defaults' => array(
+                                    'action' => 'backend',
                                 ),
                             ),
                         ),
@@ -75,8 +80,17 @@ return array(
         ),
     ),
     'controllers' => array(
+        'factories' => array(
+            'OrgHeiglHybridAuth\Controller\IndexController' => 'OrgHeiglHybridAuth\Service\IndexControllerFactory',
+        ),
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            'OrgHeiglHybridAuthSession' => 'OrgHeiglHybridAuth\Service\SessionFactory',
+            'OrgHeiglHybridAuthBackend' => 'OrgHeiglHybridAuth\Service\HybridAuthFactory',
+        ),
         'invokables' => array(
-            'OrgHeiglHybridAuth\Controller\IndexController' => 'OrgHeiglHybridAuth\Controller\IndexController',
+            'OrgHeiglHybridAuth\UserProxyFactory' => 'OrgHeiglHybridAuth\UserProxyFactory',
         ),
     ),
 );

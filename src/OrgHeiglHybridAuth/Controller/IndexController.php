@@ -28,11 +28,12 @@
  * @since     27.12.12
  * @link      https://github.com/heiglandreas/
  */
-namespace OrgHeiglHybridAuth;
+namespace OrgHeiglHybridAuth\Controller;
 
 use Hybrid_Auth;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container as SessionContainer;
+use OrgHeiglHybridAuth\UserProxyFactory;
 
 /**
  * Login or out using a social service
@@ -125,5 +126,17 @@ class IndexController extends AbstractActionController
     /**
      * Logout
      */
+    public function logoutAction()
+    {
+        //
+    }
+
+    /**
+     * Call the HybridAuth-Backend
+     */
+    public function backendAction()
+    {
+        \Hybrid_Endpoint::process();
+    }
 
 }

@@ -172,4 +172,5 @@ class Bootstrap
 
 }
 
+session_start();
 Bootstrap::init();
