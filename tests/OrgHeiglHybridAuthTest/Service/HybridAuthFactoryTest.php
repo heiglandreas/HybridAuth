@@ -44,6 +44,7 @@ class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';
+        $_SERVER['HTTP_HOST']   = 'localhost';
 
         $authInst = $factory->createService($servicemanager);
         $this->assertInstanceof('\Hybrid_Auth', $authInst);
