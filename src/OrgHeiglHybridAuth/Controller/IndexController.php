@@ -48,22 +48,82 @@ use Zend\Session\Container as SessionContainer;
 class IndexController extends AbstractActionController
 {
     /**
+     * Stores the HybridAuth-Instance
+     *
+     * @var Hybrid_Auth $authenticator
+     */
+    protected $authenticator = null;
+
+    /**
+     * Storage of the session-Container
+     *
+     * @var SessionContainer $session
+     */
+    protected $session = null;
+
+    /**
+     * Storage of the UserProxyFactory
+     *
+     * @var UserProxyFactory $userProxyFactory
+     */
+    protected $userProxyFactory = null;
+    /**
+     * Set the authenticator
+     *
+     * @param Hybrid_Auth $authenticator The Authenticator-Backend
+     *
+     * @return IndexController
+     */
+    public function setAuthenticator(Hybrid_Auth $authenticator)
+    {
+        $this->authenticator = $authenticator;
+        return $this;
+    }
+
+    /**
+     * Set the session container
+     *
+     * @param SessionContainer $container The session-container to use for storing the authentication
+     *
+     * @return IndexController
+     */
+    public function setSession(SessionContainer $container)
+    {
+        $this->session = $container;
+        return $this;
+    }
+
+    /**
+     * Set the userproxy
+     *
+     * @param UserProxyFactory $factory The ProxyFactory
+     *
+     * @return IndexController
+     */
+    public function setUserProxyFactory(UserProxyFactory $factory)
+    {
+        $this->userProxyFactory = $factory;
+        return $this;
+    }
+
+    /**
      * login using twitter
      */
     public function loginAction()
     {
+        $config = $this->getServiceLocator()->get('Config'); //OrgHeiglHybridAuth');
+        $config = $config['OrgHeiglHybridAuth'];
         try {
-            $hybridauth = new Hybrid_Auth( $config );
-            $twitter = $hybridauth->authenticate('Twitter');
-            $session = new SessionContainer('orgHeiglHybridAuth');
-            $session->offsetSet('authenticated', $twitter->isUserConnected());
-            $session->offsetSet('username', $twitter->id);
+            $backend = $this->authenticator->authenticate($config['backend']);
+            $this->session->offsetSet('authenticated', $backend->isUserConnected());
+            $this->session->offsetSet('user', $this->userProxy->factory($backend->getUserProfile()));
         } catch (Exception $e) {
-            $session->offsetSet('authenticated', false);
+            $this->session->offsetSet('authenticated', false);
         }
     }
 
     /**
      * Logout
      */
+
 }

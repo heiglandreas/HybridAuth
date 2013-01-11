@@ -40,14 +40,13 @@ use Zend\ModuleManager\ModuleManager,
 /**
  * The Module-Provider
  *
- * @category  MailProxy
- * @package   OrgHeiglMailproxy
+ * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
  * @copyright 2011-2012 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     06.03.2012
- * @link      http://github.com/heiglandreas/mailproxyModule
+ * @link      http://github.com/heiglandreas/HybridAuth
  */
 class Module
 {
@@ -69,7 +68,7 @@ class Module
 
     public function onBootstrap($e)
     {
-    	$e->getApplication()->getServiceManager()->get('translator');
+//    	$e->getApplication()->getServiceManager()->get('translator');
     	$eventManager        = $e->getApplication()->getEventManager();
     	$moduleRouteListener = new ModuleRouteListener();
     	$moduleRouteListener->attach($eventManager);
