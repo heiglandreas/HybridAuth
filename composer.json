@@ -1,0 +1,29 @@
+{
+    "name" : "org_heigl/hybridauth", 
+    "type" : "library",
+    "description" : "Login using the hybridauth-library",
+    "keywords" : [ "login","social network","user", "twitter", "facebook", "github"],
+    "homepage" : "http://github.com/heiglandreas/OrgHeiglHybridAuth",
+    "license" : "MIT",
+    "authors" : [
+    {
+        "name" : "Andreas Heigl",
+        "email" : "andreas@heigl.org",
+        "homepage" : "http://andreas.heigl.org",
+        "role" : "Developer"
+    }],
+    "require" : {
+        "php" : ">=5.3.0",
+        "zendframework/zendframework": "master",
+        "hybridauth/hybridauth":       "master"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "OrgHeiglHybridAuth" : "src"
+        },
+        "classmap": [
+            "./"
+        ]
+    },
+    "minimum-stability": "dev"
+}
