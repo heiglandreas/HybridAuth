@@ -35,7 +35,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container as SessionContainer;
 
 /**
- * Login or out from Twitter
+ * Login or out using a social service
  *
  * @category
  * @author    Andreas Heigl<andreas@heigl.org>
