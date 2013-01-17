@@ -55,7 +55,9 @@ class UserProxyFactory
         switch (get_class($userObject))
         {
             case 'Hybrid_User_Profile':
-                return new HybridAuthUserProxy($userObject);
+                $userProxy = new HybridAuthUserProxy();
+                $userProxy->setUser($userObject);
+                return $userProxy;
                 break;
             default:
                 throw new \UnexpectedValueException('The given Object could not be found');

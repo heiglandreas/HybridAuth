@@ -33,45 +33,44 @@ namespace OrgHeiglHybridAuth;
 return array(
     'router' => array(
         'routes' => array(
-            'default' => array(
-                'type'    => 'Segment',
+            'hybridauth' => array(
+                'type'    => 'Literal',
                 'options' => array(
-                    'route'    => '/auth',
-                    'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
+                    'route'    => '/authenticate',
                     'defaults' => array(
                         '__NAMESPACE__' => 'OrgHeiglHybridAuth\Controller',
                         'controller' => 'IndexController',
                         'action'     => 'login',
                     ),
-                    'child_routes' => array(
-                        'login' => array(
-                            'type' => 'Segment',
-                            'options' => array(
-                                'route' => '/login',
-                                'defaults' => array(
-                                    'action'        => 'login',
-                                ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'login' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/login/:redirect',
+                            'defaults' => array(
+                                'action'   => 'login',
+                                'redirect' => 'home'
                             ),
                         ),
-                        'logout' => array(
-                            'type' => 'Segment',
-                            'options' => array(
-                                'route' => '/logout',
-                                'defaults' => array(
-                                     'action'        => 'logout',
-                                ),
+                    ),
+                    'logout' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/logout/:redirect',
+                            'defaults' => array(
+                                 'action' => 'logout',
+                                'redirect' => 'home'
                             ),
                         ),
-                        'backend' => array(
-                            'type' => 'Literal',
-                            'options' => array(
-                                'route' => '/backend',
-                                'defaults' => array(
-                                    'action' => 'backend',
-                                ),
+                    ),
+                    'backend' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/backend',
+                            'defaults' => array(
+                                'action' => 'backend',
                             ),
                         ),
                     ),
@@ -91,6 +90,11 @@ return array(
         ),
         'invokables' => array(
             'OrgHeiglHybridAuth\UserProxyFactory' => 'OrgHeiglHybridAuth\UserProxyFactory',
+        ),
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'hybridauthinfo' => 'OrgHeiglHybridAuth\View\Helper\HybridAuth',
         ),
     ),
 );

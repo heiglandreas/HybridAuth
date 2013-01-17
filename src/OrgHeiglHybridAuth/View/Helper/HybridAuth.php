@@ -32,6 +32,8 @@ namespace OrgHeiglHybridAuth\View\Helper;
 
 use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
 use Zend\Session\Container as SessionContainer;
+use Zend\View\HelperPluginManager;
+use Zend\Mvc\MvcEvent;
 
 /**
  * A view helper that either generates a link to a login-widget or a logout-link
@@ -46,7 +48,31 @@ use Zend\Session\Container as SessionContainer;
  */
 class HybridAuth extends HtmlElement
 {
-    
+    /**
+     * The ViewHelper-Servicemanager
+     *
+     * @var HelperPluginManager $viewHelperManager
+     */
+    protected $viewHelperManager = null;
+
+    /**
+     * The Router
+     *
+     * @var MvcEvent $router
+     */
+    protected $mvcEvent = null;
+
+    /**
+     * create an instance of the viewhelper
+     *
+     * @param mixed $viewHelperManager
+     */
+    public function __construct(HelperPluginManager $viewHelperManager, MvcEvent $mvcEvent)
+    {
+        $this->viewHelperManager = $viewHelperManager;
+        $this->mvcEvent          = $mvcEvent;
+    }
+
     /**
      * create a link to either 
      *
@@ -55,16 +81,49 @@ class HybridAuth extends HtmlElement
     public function __invoke()
     {
         
-        $xhtml = '';
-        
-        $session = new SessionContainer('orgHeiglHybridAuth');
+        $xhtml = '<div class="hybridauth"><a href="%2$s">%1$s</a></div>';
+
+        $session = new SessionContainer('orgheiglhybridauth');
+        $urlHelper = $this->getViewHelper('url');
+        $currentRoute = $this->getCurrentRoute();
+
         if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
             // Display Logged in information
+            $user = $session->offsetGet('user');
+            // TODO: This has to be localized
+            $user = 'Logout ' . $user->getName();
+            $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
         } else {
             // Display login-button
+            // TODO: This has to be localized
+            $user = 'Login';
+            $link = $urlHelper('hybridauth/login', array('redirect' => $currentRoute));
         }
-        
-        return $xhtml;
 
+        return sprintf($xhtml, $user, $link);
     }
+
+    /**
+     * Get a certain viewHelper
+     *
+     * @param string $helper The name of the helper
+     *
+     * @return ViewHelper
+     */
+    protected function getViewHelper($helper)
+    {
+        return $this->viewHelperManager->get($helper);
+    }
+
+    /**
+     * Get the current route for redirecting
+     *
+     * @return string
+     */
+    protected function getCurrentRoute()
+    {
+        $route = $this->mvcEvent->getRouteMatch()->getMatchedRouteName();
+        return base64_encode($route);
+     }
+
 }

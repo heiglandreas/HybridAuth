@@ -35,6 +35,7 @@ namespace OrgHeiglHybridAuth;
 use Zend\ModuleManager\ModuleManager,
     Zend\EventManager\StaticEventManager,
     Zend\Mvc\ModuleRouteListener;
+use OrgHeiglHybridAuth\View\Helper\HybridAuth as HybridAuthViewManager;
     
 
 /**
@@ -50,28 +51,41 @@ use Zend\ModuleManager\ModuleManager,
  */
 class Module
 {
-    public function init(ModuleManager $moduleManager)
-    {
-        $events = StaticEventManager::getInstance();
-        $events->attach('bootstrap', 'bootstrap', array($this, 'initializeView'), 100);
-    }
+//    public function init(ModuleManager $moduleManager)
+//    {
+//        $events = StaticEventManager::getInstance();
+//        $events->attach('bootstrap', 'bootstrap', array($this, 'initializeView'), 100);
+//        $events->attach('loadModule', 'loadModule', function(){error_log('bar');});
+//      }
     
     public function initializeView($e)
     {
-        $app          = $e->getParam('application');
-        $basePath     = $app->getRequest()->getBasePath();
-        $locator      = $app->getLocator();
-        $renderer     = $locator->get('Zend\View\HelperLoader');
-        $renderer->registerPlugin('orgheiglhybridauth', 'OrgHeiglHybridAuth\View\Helper\HybridAuth');
+//        $app          = $e->getParam('application');
+//        $locator      = $app->getLocator();
+//        $renderer     = $locator->get('Zend\View\HelperLoader');
+//        $renderer->registerPlugin('hybridauthinfo', 'OrgHeiglHybridAuth\View\Helper\HybridAuth');
+        $servicemanager = $e->getApplication()->getServiceManager();
+        $helperManager = $servicemanager->get('viewhelpermanager');
+        $helperManager->setFactory('hybridauthinfo', function() use ($helperManager) {
+            return new HybridauthViewManager($helperManager);
+        });
+
     }
-    
 
     public function onBootstrap($e)
     {
-//    	$e->getApplication()->getServiceManager()->get('translator');
+    //	$e->getApplication()->getServiceManager()->get('translator');
     	$eventManager        = $e->getApplication()->getEventManager();
     	$moduleRouteListener = new ModuleRouteListener();
     	$moduleRouteListener->attach($eventManager);
+
+        $servicemanager = $e->getApplication()->getServiceManager();
+        $helperManager  = $servicemanager->get('viewhelpermanager');
+        $router         = $servicemanager->get('Application')->getMvcEvent();
+        $helperManager->setFactory('hybridauthinfo', function() use ($helperManager, $router) {
+            return new HybridauthViewManager($helperManager, $router);
+        });
+
     }
     
     public function getConfig()

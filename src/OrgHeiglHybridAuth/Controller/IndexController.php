@@ -116,11 +116,17 @@ class IndexController extends AbstractActionController
         $config = $config['OrgHeiglHybridAuth'];
         try {
             $backend = $this->authenticator->authenticate($config['backend']);
+            if (! $backend->isUserConnected()) {
+                throw new \UnexpectedValueException('User is not connected');
+            }
+            $profile = $backend->getUserProfile();
             $this->session->offsetSet('authenticated', $backend->isUserConnected());
-            $this->session->offsetSet('user', $this->userProxy->factory($backend->getUserProfile()));
+            $this->session->offsetSet('user', $this->userProxyFactory->factory($profile));
+            $this->session->offsetSet('backend', $backend);
         } catch (Exception $e) {
             $this->session->offsetSet('authenticated', false);
         }
+        return $this->doRedirect();
     }
 
     /**
@@ -128,7 +134,23 @@ class IndexController extends AbstractActionController
      */
     public function logoutAction()
     {
-        //
+        $this->session->offsetSet('authenticated', false);
+        $this->session->offsetSet('user', null);
+        $this->session->offsetGet('backend')->logout();
+
+        return $this->doRedirect();
+    }
+
+    /**
+     * Redirect to the last known URL
+     *
+     * @return boolean
+     */
+    protected function doRedirect()
+    {
+        $redirect = base64_decode($this->getEvent()->getRouteMatch()->getParam('redirect'));
+        $this->redirect()->toRoute($redirect);
+        return false;
     }
 
     /**
@@ -137,6 +159,7 @@ class IndexController extends AbstractActionController
     public function backendAction()
     {
         \Hybrid_Endpoint::process();
+        return false;
     }
 
 }
