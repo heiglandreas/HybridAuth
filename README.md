@@ -21,10 +21,13 @@ SocialNetwork users in your application you can use these to authorize your user
     applications ```config/autoload```-directory and adapt as appropriate.
 3. Add this snippet to create a login-link
 
+    ```php
     <?php echo $this->orgheiglhybridauth(); ?>
+    ```
 
 4. After login you can access the user-info the following way:
 
+    ```php
     // The name of the session-container can be changed in the config file!
     $container = new \Zend\Session\Container('orgheiglhybridauth');
     if (! $container->getOffset('authenticated')) {
@@ -38,6 +41,7 @@ SocialNetwork users in your application you can use these to authorize your user
     echo $user->getLanguage(); // The language the service provides for the user
     $service = $container->getOffset('backend');
     echo $service->id // Should print out the Name of the service provider.
+    ```
 
 ## Installation
 
