@@ -32,25 +32,25 @@
 namespace OrgHeiglHybridAuthTest;
 
 use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\HybridAuthUserProxy;
+use \OrgHeiglHybridAuth\HybridAuthUserWrapper;
 use \Hybrid_User_Profile;
 
 
-class HybridAuthUserProxyTest extends PHPUnit_Framework_TestCase
+class HybridAuthUserWrapperTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider proxyProvider
+     * @dataProvider wrapperProvider
      */
-    public function testProxy($property, $proxyMethod, $value)
+    public function testWrapper($property, $proxyMethod, $value)
     {
-        $proxy = new HybridAuthUserProxy();
+        $proxy = new HybridAuthUserWrapper();
         $userObj = new Hybrid_User_Profile();
         $userObj->$property = $value;
         $proxy->setUser($userObj);
         $this->assertEquals($value, call_user_func(array($proxy, $proxyMethod)));
     }
 
-    public function proxyProvider()
+    public function wrapperProvider()
     {
         return array(
             array('identifier', 'getUID', 'test'),

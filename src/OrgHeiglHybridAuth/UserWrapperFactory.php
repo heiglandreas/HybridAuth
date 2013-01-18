@@ -31,11 +31,8 @@
 
 namespace OrgHeiglHybridAuth;
 
-use Hybrid_User_Profile;
-use OrgHeiglHybridAuth\UserInterface;
-
 /**
- * This class works as proxy to the HybridAuth-User-Object
+ * This class works as factory to get an Object implementing the UserInterface
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -45,65 +42,27 @@ use OrgHeiglHybridAuth\UserInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class HybridAuthUserProxy implements UserInterface
+class UserWrapperFactory
 {
-    /**
-     * The HybridAuth-User-object
-     *
-     * @var Hybrid_User_Profile $userProfile
-     */
-    protected $user = null;
-
-    /**
-     * Set the user-object
-     *
-     * @param Hybrid_User_Profile $userProfile The userprofile to use
-     *
-     * @return HybridAuthUserProxy
-     */
-    public function setUser(Hybrid_User_Profile $user)
+   /**
+    * Create the user-Proxy according to the given User-Object
+    *
+    * @return UserInterface
+    * @throws \UnexpectedValueException
+    */
+    public function factory($userObject)
     {
-        $this->user = $user;
-        return $this;
-    }
-
-    /**
-     * Get the ID of the user
-     *
-     * @return string
-     */
-    public function getUID()
-    {
-        return $this->user->identifier;
-    }
-
-    /**
-     * Get the name of the user
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->user->displayName;
-    }
-
-    /**
-     * Get the eMail-Address of the user
-     *
-     * @return string
-     */
-    public function getMail()
-    {
-        return $this->user->email;
-    }
-
-    /**
-     * Get the language of the user
-     *
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return $this->user->language;
+        switch (get_class($userObject))
+        {
+            case 'Hybrid_User_Profile':
+                $userProxy = new HybridAuthUserWrapper();
+                $userProxy->setUser($userObject);
+                return $userProxy;
+                break;
+            default:
+                throw new \UnexpectedValueException('The given Object could not be found');
+        }
+        throw new \UnexpectedValueException('The given Object could not be found');
+        return false;
     }
 }

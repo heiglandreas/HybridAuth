@@ -50,6 +50,6 @@ class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceof('\OrgHeiglHybridAuth\Controller\IndexController', $controller);
         $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthSession'), 'session', $controller);
         $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthBackend'), 'authenticator', $controller);
-        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuth\UserProxyFactory'), 'userProxyFactory', $controller);
+        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuth\UserWrapperFactory'), 'userWrapperFactory', $controller);
     }
 }

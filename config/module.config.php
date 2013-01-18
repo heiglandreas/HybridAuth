@@ -89,7 +89,7 @@ return array(
             'OrgHeiglHybridAuthBackend' => 'OrgHeiglHybridAuth\Service\HybridAuthFactory',
         ),
         'invokables' => array(
-            'OrgHeiglHybridAuth\UserProxyFactory' => 'OrgHeiglHybridAuth\UserProxyFactory',
+            'OrgHeiglHybridAuth\UserWrapperFactory' => 'OrgHeiglHybridAuth\UserWrapperFactory',
         ),
     ),
     'view_helpers' => array(

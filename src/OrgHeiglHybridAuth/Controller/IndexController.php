@@ -33,7 +33,7 @@ namespace OrgHeiglHybridAuth\Controller;
 use Hybrid_Auth;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container as SessionContainer;
-use OrgHeiglHybridAuth\UserProxyFactory;
+use OrgHeiglHybridAuth\UserWrapperFactory;
 
 /**
  * Login or out using a social service
@@ -65,9 +65,9 @@ class IndexController extends AbstractActionController
     /**
      * Storage of the UserProxyFactory
      *
-     * @var UserProxyFactory $userProxyFactory
+     * @var UserWrapperFactory $userProxyFactory
      */
-    protected $userProxyFactory = null;
+    protected $userWrapperFactory = null;
     /**
      * Set the authenticator
      *
@@ -95,15 +95,15 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * Set the userproxy
+     * Set the userwrapper
      *
-     * @param UserProxyFactory $factory The ProxyFactory
+     * @param UserWrapperFactory $factory The ProxyFactory
      *
      * @return IndexController
      */
-    public function setUserProxyFactory(UserProxyFactory $factory)
+    public function setUserWrapperFactory(UserWrapperFactory $factory)
     {
-        $this->userProxyFactory = $factory;
+        $this->userWrapperFactory = $factory;
         return $this;
     }
 
@@ -121,7 +121,7 @@ class IndexController extends AbstractActionController
             }
             $profile = $backend->getUserProfile();
             $this->session->offsetSet('authenticated', $backend->isUserConnected());
-            $this->session->offsetSet('user', $this->userProxyFactory->factory($profile));
+            $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
             $this->session->offsetSet('backend', $backend);
         } catch (Exception $e) {
             $this->session->offsetSet('authenticated', false);
