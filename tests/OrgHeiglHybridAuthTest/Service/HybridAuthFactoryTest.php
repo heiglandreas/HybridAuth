@@ -46,7 +46,9 @@ class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_URI'] = 'http://localhost';
         $_SERVER['HTTP_HOST']   = 'localhost';
 
+        $servicemanager->get('router')->addRoute('hybridauth/backend', array('route' => 'test'));
         $authInst = $factory->createService($servicemanager);
         $this->assertInstanceof('\Hybrid_Auth', $authInst);
+
     }
 }

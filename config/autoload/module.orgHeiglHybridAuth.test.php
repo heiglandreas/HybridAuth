@@ -32,7 +32,7 @@ namespace OrgHeiglHybridAuth;
 
 return array('OrgHeiglHybridAuth' => array(
     'hybrid_auth' => array(
-        'base_url' => 'http://example.com/auth/backend',
+       // 'base_url' => 'http://example.com/auth/backend',
         'providers' => array(
             'Twitter' => array('enabled' => false, 'keys' => array('key' => '', 'secret' => '')),
         ),
