@@ -112,7 +112,7 @@ class IndexController extends AbstractActionController
      */
     public function loginAction()
     {
-        $config = $this->getServiceLocator()->get('Config'); //OrgHeiglHybridAuth');
+        $config = $this->getServiceLocator()->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
         try {
             $backend = $this->authenticator->authenticate($config['backend']);
