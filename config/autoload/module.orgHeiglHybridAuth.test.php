@@ -37,6 +37,7 @@ return array('OrgHeiglHybridAuth' => array(
             'Twitter' => array('enabled' => false, 'keys' => array('key' => '', 'secret' => '')),
         ),
         'debug_mode' => false,
+        // For some reason Hybrid_Auth doesn't create file in a specified folder, be sure that it exists
         'debug_file' => __DIR__ . '/hybrid_auth.log',
     ),
     'backend' => 'twitter',
