@@ -136,7 +136,14 @@ class IndexController extends AbstractActionController
     {
         $this->session->offsetSet('authenticated', false);
         $this->session->offsetSet('user', null);
-        $this->session->offsetGet('backend')->logout();
+        if($Backend = $this->session->offsetGet('backend') !== null) {
+            if(is_object($Backend)) {
+        		$Backend->logout();
+        	}
+        	else {
+	        	$this->session->offsetSet('backend', null);
+        	}
+        }
 
         return $this->doRedirect();
     }
