@@ -59,7 +59,7 @@ class IndexControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        //$serviceLocator = $serviceLocator->getServiceLocator();
+        $serviceLocator = $serviceLocator->getServiceLocator();
 
         $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
         $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
