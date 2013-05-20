@@ -22,7 +22,7 @@ SocialNetwork users in your application you can use these to authorize your user
 3. Add this snippet to create a login-link
 
     ```php
-    <?php echo $this->orgheiglhybridauth(); ?>
+    <?php echo $this->hybridauthinfo(); ?>
     ```
 
 4. After login you can access the user-info the following way:
