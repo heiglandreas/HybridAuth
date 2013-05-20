@@ -61,8 +61,8 @@ class IndexControllerFactory implements FactoryInterface
     {
         $serviceLocator = $serviceLocator->getServiceLocator();
 
-        $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
         $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
+        $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
         $wrapperFactory = $serviceLocator->get('OrgHeiglHybridAuth\UserWrapperFactory');
 
         $controller = new IndexController();
