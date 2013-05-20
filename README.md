@@ -28,18 +28,24 @@ SocialNetwork users in your application you can use these to authorize your user
 4. After login you can access the user-info the following way:
 
     ```php
+    // Need this block to autoload Hybrid_Auth dependencies to unserialize object stored in session
+    use Hybrid_Auth;
+    $config = $this->getServiceLocator()->get('Config');
+    $config = $config['OrgHeiglHybridAuth'];
+    $hybridAuth = new Hybrid_Auth($config['hybrid_auth']);
+        
     // The name of the session-container can be changed in the config file!
     $container = new \Zend\Session\Container('orgheiglhybridauth');
-    if (! $container->getOffset('authenticated')) {
+    if (! $container->offsetExists('authenticated')) {
         echo 'No user logged in';
     }
     /** @var OrgHeiglHybridAuth\UserInterface $user */
-    $user = $container->getOffset('user');
+    $user = $container->offsetGet('user');
     echo $user->getName(); // The name of the logged in user
     echo $user->getUID();  // The internal UID of the used service
     echo $user->getMail(); // The mail-address the service provides
     echo $user->getLanguage(); // The language the service provides for the user
-    $service = $container->getOffset('backend');
+    $service = $container->offsetGet('backend');
     echo $service->id // Should print out the Name of the service provider.
     ```
 
