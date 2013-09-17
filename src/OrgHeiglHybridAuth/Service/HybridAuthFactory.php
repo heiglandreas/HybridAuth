@@ -83,6 +83,6 @@ class HybridAuthFactory implements FactoryInterface
         $uri->setPath($basePath);
         $uri->setQuery(array());
         $uri->setFragment('');
-        return $uri->getScheme() . '://' . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
+        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
     }
 }
