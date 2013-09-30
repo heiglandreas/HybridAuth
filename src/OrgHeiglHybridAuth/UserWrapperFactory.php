@@ -54,13 +54,16 @@ class UserWrapperFactory
     {
         switch (get_class($userObject))
         {
-            case 'Hybrid_User_Profile':
+            case 'Hybridauth\\Entity\\Profile':
                 $userProxy = new HybridAuthUserWrapper();
                 $userProxy->setUser($userObject);
                 return $userProxy;
                 break;
             default:
-                throw new \UnexpectedValueException('The given Object could not be found');
+                throw new \UnexpectedValueException(sprintf(
+                    'The given Object could not be found. Found "%s" instead',
+                    get_Class($userObject)
+                ));
         }
         throw new \UnexpectedValueException('The given Object could not be found');
         return false;

@@ -31,7 +31,7 @@
 
 namespace OrgHeiglHybridAuth;
 
-use Hybrid_User_Profile;
+use Hybridauth\Entity\Profile;
 use OrgHeiglHybridAuth\UserInterface;
 
 /**
@@ -50,18 +50,18 @@ class HybridAuthUserWrapper implements UserInterface
     /**
      * The HybridAuth-User-object
      *
-     * @var Hybrid_User_Profile $userProfile
+     * @var Hybridauth\Entity\Profile $userProfile
      */
     protected $user = null;
 
     /**
      * Set the user-object
      *
-     * @param Hybrid_User_Profile $userProfile The userprofile to use
+     * @param Hybridauth\Entity\Profile $userProfile The userprofile to use
      *
      * @return HybridAuthUserProxy
      */
-    public function setUser(Hybrid_User_Profile $user)
+    public function setUser(Profile $user)
     {
         $this->user = $user;
         return $this;
@@ -74,7 +74,7 @@ class HybridAuthUserWrapper implements UserInterface
      */
     public function getUID()
     {
-        return $this->user->identifier;
+        return $this->user->getIdentifier();
     }
 
     /**
@@ -84,7 +84,7 @@ class HybridAuthUserWrapper implements UserInterface
      */
     public function getName()
     {
-        return $this->user->displayName;
+        return $this->user->getDisplayName();
     }
 
     /**
@@ -94,7 +94,7 @@ class HybridAuthUserWrapper implements UserInterface
      */
     public function getMail()
     {
-        return $this->user->email;
+        return $this->user->getEmail();
     }
 
     /**
@@ -104,6 +104,6 @@ class HybridAuthUserWrapper implements UserInterface
      */
     public function getLanguage()
     {
-        return $this->user->language;
+        return $this->user->getLanguage();
     }
 }

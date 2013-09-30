@@ -63,6 +63,12 @@ class HybridAuth extends HtmlElement
     protected $mvcEvent = null;
 
     /**
+     * The serviceLocator
+     *
+     * @var ServiceLocatorInterface
+     */
+
+    /**
      * create an instance of the viewhelper
      *
      * @param mixed $viewHelperManager
@@ -81,9 +87,11 @@ class HybridAuth extends HtmlElement
     public function __invoke()
     {
         
-        $xhtml = '<div class="hybridauth"><a href="%2$s">%1$s</a></div>';
+        $xhtml = '<a class="hybridauth" href="%2$s">%1$s</a>';
 
-        $session = new SessionContainer('orgheiglhybridauth');
+        //$session = new SessionContainer('orgheiglhybridauth');
+        $session = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthSession');
+
         $urlHelper = $this->getViewHelper('url');
         $currentRoute = $this->getCurrentRoute();
 
