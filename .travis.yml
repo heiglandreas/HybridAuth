@@ -1,14 +1,16 @@
 language: php
 
 php:
-  - "5.3"
-  - "5.4"
-#  - "5.5"
+  - 5.3
+  - 5.4
+  - 5.5
 
-before_install: composer install
+before_install:
+ - composer install
 
-script: phpunit --coverage-text
+script:
+ - phpunit --coverage-text
 
-#notifications:
-#  email:
-#    - andreas@heigl.org
+notifications:
+  email:
+    - andreas@heigl.org
