@@ -31,7 +31,7 @@
 namespace OrgHeiglHybridAuth\Service;
 
 use Zend\ServiceManager;
-use Hybrid_Auth;
+use Hybridauth\Hybridauth;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -63,7 +63,8 @@ class HybridAuthFactory implements FactoryInterface
 
         $config['hybrid_auth']['base_url'] = $this->getBackendUrl($services);
 
-        $hybridAuth = new Hybrid_Auth($config['hybrid_auth']);
+
+        $hybridAuth = new Hybridauth($config['hybrid_auth']);
         return $hybridAuth;
     }
 
