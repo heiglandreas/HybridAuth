@@ -30,7 +30,8 @@
  */
 namespace OrgHeiglHybridAuth\Controller;
 
-use Hybrid_Auth;
+use Hybridauth\Hybridauth;
+use Hybridauth\Endpoint;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container as SessionContainer;
 use OrgHeiglHybridAuth\UserWrapperFactory;
@@ -51,7 +52,7 @@ class IndexController extends AbstractActionController
     /**
      * Stores the HybridAuth-Instance
      *
-     * @var Hybrid_Auth $authenticator
+     * @var Hybridauth $authenticator
      */
     protected $authenticator = null;
 
@@ -75,7 +76,7 @@ class IndexController extends AbstractActionController
      *
      * @return IndexController
      */
-    public function setAuthenticator(Hybrid_Auth $authenticator)
+    public function setAuthenticator(Hybridauth $authenticator)
     {
         $this->authenticator = $authenticator;
         return $this;
@@ -116,14 +117,15 @@ class IndexController extends AbstractActionController
         $config = $config['OrgHeiglHybridAuth'];
         try {
             $backend = $this->authenticator->authenticate($config['backend']);
-            if (! $backend->isUserConnected()) {
+            if (! $backend->isAuthorized()) {
                 throw new \UnexpectedValueException('User is not connected');
             }
             $profile = $backend->getUserProfile();
-            $this->session->offsetSet('authenticated', $backend->isUserConnected());
+          //  error_log(print_R($this->userWrapperFactory->factory($profile),true));
+            $this->session->offsetSet('authenticated', $backend->isAuthorized());
             $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
             $this->session->offsetSet('backend', $backend);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->session->offsetSet('authenticated', false);
         }
         return $this->doRedirect();
@@ -136,9 +138,9 @@ class IndexController extends AbstractActionController
     {
         $this->session->offsetSet('authenticated', false);
         $this->session->offsetSet('user', null);
-        if($Backend = $this->session->offsetGet('backend') !== null) {
+        if($Backend = $this->session->offsetGet('backend')) {
             if(is_object($Backend)) {
-        		$Backend->logout();
+        		$Backend->disconnect();
         	}
         	else {
 	        	$this->session->offsetSet('backend', null);
@@ -156,6 +158,7 @@ class IndexController extends AbstractActionController
     protected function doRedirect()
     {
         $redirect = base64_decode($this->getEvent()->getRouteMatch()->getParam('redirect'));
+        error_log($redirect);
         $this->redirect()->toRoute($redirect);
         return false;
     }
@@ -165,7 +168,8 @@ class IndexController extends AbstractActionController
      */
     public function backendAction()
     {
-        \Hybrid_Endpoint::process();
+        $endpoint = new Endpoint();
+        $endpoint->process();
         return false;
     }
 
