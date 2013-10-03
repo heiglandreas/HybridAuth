@@ -123,7 +123,7 @@ class IndexController extends AbstractActionController
             $this->session->offsetSet('authenticated', $backend->isUserConnected());
             $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
             $this->session->offsetSet('backend', $backend);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->session->offsetSet('authenticated', false);
         }
         return $this->doRedirect();
