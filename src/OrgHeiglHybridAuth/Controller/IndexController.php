@@ -125,7 +125,7 @@ class IndexController extends AbstractActionController
             $this->session->offsetSet('authenticated', $backend->isAuthorized());
             $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
             $this->session->offsetSet('backend', $backend);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->session->offsetSet('authenticated', false);
         }
         return $this->doRedirect();
@@ -138,9 +138,9 @@ class IndexController extends AbstractActionController
     {
         $this->session->offsetSet('authenticated', false);
         $this->session->offsetSet('user', null);
-        if($Backend = $this->session->offsetGet('backend') !== null) {
+        if($Backend = $this->session->offsetGet('backend')) {
             if(is_object($Backend)) {
-        		$Backend->logout();
+        		$Backend->disconnect();
         	}
         	else {
 	        	$this->session->offsetSet('backend', null);
