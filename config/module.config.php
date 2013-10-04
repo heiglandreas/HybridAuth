@@ -87,6 +87,7 @@ return array(
         'factories' => array(
             'OrgHeiglHybridAuthSession' => 'OrgHeiglHybridAuth\Service\SessionFactory',
             'OrgHeiglHybridAuthBackend' => 'OrgHeiglHybridAuth\Service\HybridAuthFactory',
+            'OrgHeiglHybridAuthCurrentUser' => 'OrgHeiglHybridAuth\Service\UserFactory',
         ),
         'invokables' => array(
             'OrgHeiglHybridAuth\UserWrapperFactory' => 'OrgHeiglHybridAuth\UserWrapperFactory',
