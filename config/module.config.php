@@ -48,7 +48,7 @@ return array(
                     'login' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/login/:provider[/:redirect]',
+                            'route' => '/login[/:redirect][/:provider]',
                             'defaults' => array(
                                 'action'   => 'login',
                                 'redirect' => 'home'
