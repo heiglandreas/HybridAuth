@@ -106,4 +106,12 @@ class HybridAuthUserWrapper implements UserInterface
     {
         return $this->user->getLanguage();
     }
+
+    /**
+     * Get the display-name of the user.
+     */
+    public function getDisplayName()
+    {
+        return $this->user->getDisplayName();
+    }
 }
