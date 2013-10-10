@@ -33,7 +33,7 @@ namespace OrgHeiglHybridAuthTest;
 
 use \PHPUnit_Framework_TestCase;
 use \OrgHeiglHybridAuth\HybridAuthUserWrapper;
-use \Hybrid_User_Profile;
+use \Hybridauth\Entity\Profile;
 
 
 class HybridAuthUserWrapperTest extends PHPUnit_Framework_TestCase
@@ -44,8 +44,8 @@ class HybridAuthUserWrapperTest extends PHPUnit_Framework_TestCase
     public function testWrapper($property, $proxyMethod, $value)
     {
         $proxy = new HybridAuthUserWrapper();
-        $userObj = new Hybrid_User_Profile();
-        $userObj->$property = $value;
+        $userObj = new Profile();
+        $userObj->$property($value);
         $proxy->setUser($userObj);
         $this->assertEquals($value, call_user_func(array($proxy, $proxyMethod)));
     }
@@ -53,10 +53,10 @@ class HybridAuthUserWrapperTest extends PHPUnit_Framework_TestCase
     public function wrapperProvider()
     {
         return array(
-            array('identifier', 'getUID', 'test'),
-            array('displayName', 'getName', 'test'),
-            array('email', 'getMail', 'test'),
-            array('language', 'getLanguage', 'test'),
+            array('setidentifier', 'getUID', 'test'),
+            array('setdisplayName', 'getName', 'test'),
+            array('setemail', 'getMail', 'test'),
+            array('setlanguage', 'getLanguage', 'test'),
         );
     }
 
