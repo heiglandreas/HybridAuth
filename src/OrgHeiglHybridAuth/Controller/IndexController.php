@@ -158,8 +158,11 @@ class IndexController extends AbstractActionController
     protected function doRedirect()
     {
         $redirect = base64_decode($this->getEvent()->getRouteMatch()->getParam('redirect'));
-        error_log($redirect);
-        $this->redirect()->toRoute($redirect);
+        if (preg_match('|://|', $redirect)) {
+            $this->redirect()->toUrl($redirect);
+        } else {
+            $this->redirect()->toRoute($redirect);
+        }
         return false;
     }
 
