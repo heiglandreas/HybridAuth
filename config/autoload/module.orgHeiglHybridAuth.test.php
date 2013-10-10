@@ -40,6 +40,5 @@ return array('OrgHeiglHybridAuth' => array(
         // For some reason Hybrid_Auth doesn't create file in a specified folder, be sure that it exists
         'debug_file' => __DIR__ . '/hybrid_auth.log',
     ),
-    'backend' => 'twitter',
     'session_name' => 'orgheiglhybridauth',
 ));

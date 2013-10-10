@@ -84,7 +84,7 @@ class HybridAuth extends HtmlElement
      *
      * @return void
      */
-    public function __invoke()
+    public function __invoke($provider)
     {
         
         $xhtml = '<a class="hybridauth" href="%2$s">%1$s</a>';
@@ -105,7 +105,7 @@ class HybridAuth extends HtmlElement
             // Display login-button
             // TODO: This has to be localized
             $user = 'Login';
-            $link = $urlHelper('hybridauth/login', array('redirect' => $currentRoute));
+            $link = $urlHelper('hybridauth/login', array('provider' => $provider, 'redirect' => $currentRoute));
         }
 
         return sprintf($xhtml, $user, $link);

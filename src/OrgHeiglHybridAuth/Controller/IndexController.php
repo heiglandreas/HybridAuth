@@ -113,10 +113,10 @@ class IndexController extends AbstractActionController
      */
     public function loginAction()
     {
-        $config = $this->getServiceLocator()->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
+        $provider = $this->params()->fromRoute('provider');
+
         try {
-            $backend = $this->authenticator->authenticate($config['backend']);
+            $backend = $this->authenticator->authenticate($provider);
             if (! $backend->isAuthorized()) {
                 throw new \UnexpectedValueException('User is not connected');
             }
