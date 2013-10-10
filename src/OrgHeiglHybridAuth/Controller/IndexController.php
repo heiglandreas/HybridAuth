@@ -113,10 +113,10 @@ class IndexController extends AbstractActionController
      */
     public function loginAction()
     {
-        $config = $this->getServiceLocator()->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
+        $provider = $this->params()->fromRoute('provider');
+
         try {
-            $backend = $this->authenticator->authenticate($config['backend']);
+            $backend = $this->authenticator->authenticate($provider);
             if (! $backend->isAuthorized()) {
                 throw new \UnexpectedValueException('User is not connected');
             }
@@ -158,8 +158,11 @@ class IndexController extends AbstractActionController
     protected function doRedirect()
     {
         $redirect = base64_decode($this->getEvent()->getRouteMatch()->getParam('redirect'));
-        error_log($redirect);
-        $this->redirect()->toRoute($redirect);
+        if (preg_match('|://|', $redirect)) {
+            $this->redirect()->toUrl($redirect);
+        } else {
+            $this->redirect()->toRoute($redirect);
+        }
         return false;
     }
 
