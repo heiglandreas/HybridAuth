@@ -114,6 +114,10 @@ class IndexController extends AbstractActionController
     public function loginAction()
     {
         $provider = $this->params()->fromRoute('provider');
+        if (!$provider) {
+            $config = $this->getServiceLocator()->get('Config');
+            $provider = $config['OrgHeiglHybridAuth']['backend'];
+        }
 
         try {
             $backend = $this->authenticator->authenticate($provider);
@@ -138,13 +142,12 @@ class IndexController extends AbstractActionController
     {
         $this->session->offsetSet('authenticated', false);
         $this->session->offsetSet('user', null);
-        if($Backend = $this->session->offsetGet('backend')) {
-            if(is_object($Backend)) {
-        		$Backend->disconnect();
-        	}
-        	else {
-	        	$this->session->offsetSet('backend', null);
-        	}
+        if ($Backend = $this->session->offsetGet('backend')) {
+            if (is_object($Backend)) {
+                $Backend->disconnect();
+            } else {
+                $this->session->offsetSet('backend', null);
+            }
         }
 
         return $this->doRedirect();

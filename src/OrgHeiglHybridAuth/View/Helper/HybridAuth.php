@@ -35,6 +35,9 @@ use Zend\Session\Container as SessionContainer;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
 
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
 /**
  * A view helper that either generates a link to a login-widget or a logout-link
  *
@@ -46,7 +49,7 @@ use Zend\Mvc\MvcEvent;
  * @since     05.12.2012
  * @link      http://github.com/heiglandreas/OrgHeiglHybridAuth
  */
-class HybridAuth extends HtmlElement
+class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
 {
     /**
      * The ViewHelper-Servicemanager
@@ -67,6 +70,7 @@ class HybridAuth extends HtmlElement
      *
      * @var ServiceLocatorInterface
      */
+    protected $serviceLocator = null;
 
     /**
      * create an instance of the viewhelper
@@ -80,13 +84,18 @@ class HybridAuth extends HtmlElement
     }
 
     /**
-     * create a link to either 
+     * create a link to either
      *
      * @return void
      */
-    public function __invoke($provider)
+    public function __invoke($provider = null)
     {
-        
+        if (!$provider) {
+            $pluginManager = $this->getServiceLocator();
+            $config = $pluginManager->getServiceLocator()->get('Config');
+            $provider = $config['OrgHeiglHybridAuth']['backend'];
+        }
+
         $xhtml = '<a class="hybridauth" href="%2$s">%1$s</a>';
 
         //$session = new SessionContainer('orgheiglhybridauth');
@@ -132,6 +141,26 @@ class HybridAuth extends HtmlElement
     {
         $route = $this->mvcEvent->getRouteMatch()->getMatchedRouteName();
         return base64_encode($route);
-     }
+    }
 
+    /**
+     * Set serviceManager instance
+     *
+     * @param  ServiceLocatorInterface $serviceLocator
+     * @return void
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Retrieve serviceManager instance
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
 }
