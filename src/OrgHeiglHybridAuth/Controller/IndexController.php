@@ -114,10 +114,6 @@ class IndexController extends AbstractActionController
     public function loginAction()
     {
         $provider = $this->params()->fromRoute('provider');
-        if (!$provider) {
-            $config = $this->getServiceLocator()->get('Config');
-            $provider = $config['OrgHeiglHybridAuth']['backend'];
-        }
 
         try {
             $backend = $this->authenticator->authenticate($provider);
