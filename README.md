@@ -22,17 +22,20 @@ SocialNetwork users in your application you can use these to authorize your user
 3. Add this snippet to create a login-link
 
     ```php
-    <?php echo $this->hybridauthinfo(); ?>
+    <?php
+    $provider = "Twitter";
+    echo $this->hybridauthinfo($provider);
+    ?>
     ```
 
 4. After login you can access the user-info the following way:
 
     ```php
     // Need this block to autoload Hybrid_Auth dependencies to unserialize object stored in session
-    use Hybrid_Auth;
+    use Hybridauth\Hybridauth;
     $config = $this->getServiceLocator()->get('Config');
     $config = $config['OrgHeiglHybridAuth'];
-    $hybridAuth = new Hybrid_Auth($config['hybrid_auth']);
+    $hybridAuth = new Hybridauth($config['hybrid_auth']);
         
     // The name of the session-container can be changed in the config file!
     $container = new \Zend\Session\Container('orgheiglhybridauth');
