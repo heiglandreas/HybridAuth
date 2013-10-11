@@ -48,7 +48,7 @@ return array(
                     'login' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/login/:redirect',
+                            'route' => '/login/:provider[/:redirect]',
                             'defaults' => array(
                                 'action'   => 'login',
                                 'redirect' => 'home'
@@ -58,9 +58,9 @@ return array(
                     'logout' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/logout/:redirect',
+                            'route' => '/logout[/:redirect]',
                             'defaults' => array(
-                                 'action' => 'logout',
+                                'action' => 'logout',
                                 'redirect' => 'home'
                             ),
                         ),
