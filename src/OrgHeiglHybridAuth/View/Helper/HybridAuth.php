@@ -31,7 +31,6 @@
 namespace OrgHeiglHybridAuth\View\Helper;
 
 use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
-use Zend\Session\Container as SessionContainer;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
 
@@ -90,15 +89,9 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
      */
     public function __invoke($provider = null)
     {
-        if (!$provider) {
-            $pluginManager = $this->getServiceLocator();
-            $config = $pluginManager->getServiceLocator()->get('Config');
-            $provider = $config['OrgHeiglHybridAuth']['backend'];
-        }
+        $pluginManager = $this->getServiceLocator();
+        $config = $pluginManager->getServiceLocator()->get('Config');
 
-        $xhtml = '<a class="hybridauth" href="%2$s">%1$s</a>';
-
-        //$session = new SessionContainer('orgheiglhybridauth');
         $session = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthSession');
 
         $urlHelper = $this->getViewHelper('url');
@@ -108,16 +101,66 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
             // Display Logged in information
             $user = $session->offsetGet('user');
             // TODO: This has to be localized
-            $user = 'Logout ' . $user->getName();
+            $user = sprintf($config['logoffString'], $user->getName());
             $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
-        } else {
-            // Display login-button
-            // TODO: This has to be localized
-            $user = 'Login';
-            $link = $urlHelper('hybridauth/login', array('provider' => $provider, 'redirect' => $currentRoute));
+            $link = sprintf($config['link'], $user, $link);
+            return sprintf($config['logoffcontainer'], $link);
         }
 
-        return sprintf($xhtml, $user, $link);
+        $xhtml = array();
+        $backendList = $this->getBackends($providers);
+
+        if (1 == count($backendList)) {
+            return sprintf(
+                $config['item'],
+                null,
+                sprintf(
+                    $config['link'],
+                    (is_string(key($backendList)?key($backendList):current($backendList))),
+                    $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => current($backendList)))
+                )
+            );
+        }
+        foreach ($backendList as $name => $backend) {
+            $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => $backend));
+            $xhtml[] = sprintf(
+                $config['item'],
+                $config['itemAttribs'],
+                sprintf(
+                    $config['link'],
+                    (is_string($name)?$name:$backend),
+                    $link
+                )
+            );
+        }
+
+
+        return sprintf(
+            $config['logincontainer'],
+            $config['loginstring'],
+            sprintf(
+                $config['itemlist'],
+                $config['listAttribs'],
+                implode("\n",$xhtml)
+            )
+        );
+
+    }
+
+    /**
+     * Get the backends
+     *
+     * @return array
+     */
+    public function getBackends($backends = null)
+    {
+        if (null === $backends) {
+            $pluginManager = $this->getServiceLocator();
+            $config = $pluginManager->getServiceLocator()->get('Config');
+            $backends = $config['OrgHeiglHybridAuth']['backend'];
+        }
+
+        return (array) $backends;
     }
 
     /**

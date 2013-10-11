@@ -98,4 +98,27 @@ return array(
             'hybridauthinfo' => 'OrgHeiglHybridAuth\View\Helper\HybridAuth',
         ),
     ),
+    'OrgHeiglHybridAuth' => array(
+        'hybrid_auth' => array(
+            'base_url' => 'http://example.com/authenticate/backend',
+            'providers' => array(
+                'Twitter' => array('enabled' => false, 'keys' => array('key' => '', 'secret' => '')),
+            ),
+            'debug_mode' => false,
+            'debug_file' => __DIR__ . '/hybrid_auth.log',
+        ),
+        'backend'         => 'twitter',
+//        'backend'         => array('twitter'),
+//        'backend'         => array('twitter', 'facebook', '...'),
+        'link'            => '<a class="hybridauth" href="%2$s">%1$s</a>', // Will be either inserted as first parameter into item or simply returned as complete entry
+        'item'            => '<li%2$s>%1$s</li>',
+        'itemlist'        => '<ul%2$s>%1$s</ul>',
+        'logincontainer'  => '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">%1$s<b class="caret"></b></a>%2$s</li>',
+        'logoffcontainer' => '<li>%1$s</li>',
+        'logoffstring'    => 'Logout %1$s',
+        'loginstring'     => 'Login%1$s'
+        'listAttribs'     => null, // Will be inserted as 2nd parameter into item
+        'itemAttribs'     => null, // Will be inserted as 2nd parameter into itemlist
+
+        )
 );
