@@ -116,9 +116,9 @@ return array(
         'logincontainer'  => '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">%1$s<b class="caret"></b></a>%2$s</li>',
         'logoffcontainer' => '<li>%1$s</li>',
         'logoffstring'    => 'Logout %1$s',
-        'loginstring'     => 'Login%1$s'
+        'loginstring'     => 'Login%1$s',
         'listAttribs'     => null, // Will be inserted as 2nd parameter into item
         'itemAttribs'     => null, // Will be inserted as 2nd parameter into itemlist
 
-        )
+    )
 );
