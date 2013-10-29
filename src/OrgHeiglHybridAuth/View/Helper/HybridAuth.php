@@ -91,17 +91,19 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
     {
         $pluginManager = $this->getServiceLocator();
         $config = $pluginManager->getServiceLocator()->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
 
         $session = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthSession');
 
         $urlHelper = $this->getViewHelper('url');
         $currentRoute = $this->getCurrentRoute();
+        $providers    = $config['provider'];
 
         if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
             // Display Logged in information
             $user = $session->offsetGet('user');
             // TODO: This has to be localized
-            $user = sprintf($config['logoffString'], $user->getName());
+            $user = sprintf($config['logoffstring'], $user->getName());
             $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
             $link = sprintf($config['link'], $user, $link);
             return sprintf($config['logoffcontainer'], $link);
@@ -113,24 +115,24 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
         if (1 == count($backendList)) {
             return sprintf(
                 $config['item'],
-                null,
                 sprintf(
                     $config['link'],
-                    (is_string(key($backendList)?key($backendList):current($backendList))),
+                    (is_string(key($backendList)?$backendList:current($backendList))),
                     $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => current($backendList)))
-                )
+                ),
+                null
             );
         }
         foreach ($backendList as $name => $backend) {
             $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => $backend));
             $xhtml[] = sprintf(
                 $config['item'],
-                $config['itemAttribs'],
                 sprintf(
                     $config['link'],
                     (is_string($name)?$name:$backend),
                     $link
-                )
+                ),
+                $config['itemAttribs']
             );
         }
 
@@ -160,7 +162,17 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
             $backends = $config['OrgHeiglHybridAuth']['backend'];
         }
 
-        return (array) $backends;
+        $backends = (array) $backends;
+
+        foreach ($backends as $item => $value) {
+            if (is_string($item)) {
+                continue;
+            }
+            $backends[strtolower($value)] = $value;
+            unset($backends[$item]);
+        }
+
+        return $backends;
     }
 
     /**
