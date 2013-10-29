@@ -22,39 +22,41 @@
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
- * @copyright ©2013-2013 Andreas Heigl
+ * @copyright ©2012-2013 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     11.01.13
- * @link      https://github.com/heiglandreas/
+ * @link      https://github.com/heiglandreas/HybridAuth
  */
 
-namespace OrgHeiglHybridAuthTest;
+namespace OrgHeiglHybridAuth;
 
-use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\UserWrapperFactory;
-use \Hybridauth\Entity\Profile;
-
-
-class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
+/**
+ * This interface describes methods to access user-informations
+ *
+ * @category  HybridAuth
+ * @author    Andreas Heigl<andreas@heigl.org>
+ * @copyright ©2012-2013 Andreas Heigl
+ * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
+ * @version   0.0
+ * @since     11.01.13
+ * @link      https://github.com/heiglandreas/HybridAuth
+ */
+interface UserTokenInterface extends UserInterface
 {
-    public function testCreationWithKnownUserObject()
-    {
-        $factory = new UserWrapperFactory();
-        $userObj = new Profile();
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
-    }
+    /**
+     * Get the service the user has been authenticated with
+     *
+     * This method has to return FALSE if no authentication has been performed
+     *
+     * @return string|false
+     */
+    public function getService();
 
     /**
-     * @expectedException \UnexpectedValueException
+     * Check whether the user has been authenticated at all.
+     *
+     * @return boolean
      */
-    public function testCreationWithUnknownUserObject()
-    {
-        $factory = new UserWrapperFactory();
-        $userObj = $this->getMock('Hybridauth\\Entity\\Profile');
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);
-    }
+    public function isAuthenticated();
 }

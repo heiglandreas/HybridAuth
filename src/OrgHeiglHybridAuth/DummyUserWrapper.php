@@ -22,39 +22,76 @@
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
- * @copyright ©2013-2013 Andreas Heigl
+ * @copyright ©2012-2013 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     11.01.13
- * @link      https://github.com/heiglandreas/
+ * @link      https://github.com/heiglandreas/HybridAuth
  */
 
-namespace OrgHeiglHybridAuthTest;
+namespace OrgHeiglHybridAuth;
 
-use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\UserWrapperFactory;
-use \Hybridauth\Entity\Profile;
+use Hybridauth\Entity\Profile;
+use OrgHeiglHybridAuth\UserInterface;
 
-
-class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
+/**
+ * This class works as proxy to the HybridAuth-User-Object
+ *
+ * @category  HybridAuth
+ * @author    Andreas Heigl<andreas@heigl.org>
+ * @copyright ©2012-2013 Andreas Heigl
+ * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
+ * @version   0.0
+ * @since     11.01.13
+ * @link      https://github.com/heiglandreas/HybridAuth
+ */
+class DummyUserWrapper implements UserInterface
 {
-    public function testCreationWithKnownUserObject()
+    /**
+     * Get the ID of the user
+     *
+     * @return string
+     */
+    public function getUID()
     {
-        $factory = new UserWrapperFactory();
-        $userObj = new Profile();
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
+        return '';
     }
 
     /**
-     * @expectedException \UnexpectedValueException
+     * Get the name of the user
+     *
+     * @return string
      */
-    public function testCreationWithUnknownUserObject()
+    public function getName()
     {
-        $factory = new UserWrapperFactory();
-        $userObj = $this->getMock('Hybridauth\\Entity\\Profile');
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);
+        return '';
+    }
+
+    /**
+     * Get the eMail-Address of the user
+     *
+     * @return string
+     */
+    public function getMail()
+    {
+        return '';
+    }
+
+    /**
+     * Get the language of the user
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return '';
+    }
+
+    /**
+     * Get the display-name of the user.
+     */
+    public function getDisplayName()
+    {
+        return '';
     }
 }

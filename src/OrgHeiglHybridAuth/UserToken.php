@@ -31,8 +31,9 @@
 
 namespace OrgHeiglHybridAuth;
 
-use Hybridauth\Entity\Profile;
-use OrgHeiglHybridAuth\UserInterface;
+use OrgHeiglHybridAuth\HybridAuthUserWrapper;
+use OrgHeiglHybridAuth\DummyUserWrapper;
+use OrgHeiglHybridAuth\UserTokenInterface;
 
 /**
  * This class works as proxy to the HybridAuth-User-Object
@@ -45,25 +46,46 @@ use OrgHeiglHybridAuth\UserInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class HybridAuthUserWrapper extends DummyUserWrapper
+class UserToken implements UserTokenInterface
 {
     /**
      * The HybridAuth-User-object
      *
-     * @var Hybridauth\Entity\Profile $userProfile
+     * @var HybridAuthUserWrapper $userProfile
      */
     protected $user = null;
 
     /**
+     * The service the user has been authenticated with
+     *
+     * @var string $service
+     */
+    protected $service = '';
+
+    /**
      * Set the user-object
      *
-     * @param Hybridauth\Entity\Profile $userProfile The userprofile to use
+     * @param HybridAuthUserWrapper $userProfile The userprofile to use
      *
-     * @return HybridAuthUserProxy
+     * @return UserToken
      */
-    public function setUser(Profile $user)
+    public function setUser(UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Set the service the user has been authenticated with
+     *
+     * @param string $service
+     *
+     * @return UserToken
+     */
+    public function setService($service)
+    {
+        $this->service = strtolower($service);
+
         return $this;
     }
 
@@ -74,7 +96,7 @@ class HybridAuthUserWrapper extends DummyUserWrapper
      */
     public function getUID()
     {
-        return $this->user->getIdentifier();
+        return $this->user->getUid();
     }
 
     /**
@@ -84,7 +106,7 @@ class HybridAuthUserWrapper extends DummyUserWrapper
      */
     public function getName()
     {
-        return $this->user->getDisplayName();
+        return $this->user->getName();
     }
 
     /**
@@ -94,7 +116,7 @@ class HybridAuthUserWrapper extends DummyUserWrapper
      */
     public function getMail()
     {
-        return $this->user->getEmail();
+        return $this->user->getMail();
     }
 
     /**
@@ -113,5 +135,35 @@ class HybridAuthUserWrapper extends DummyUserWrapper
     public function getDisplayName()
     {
         return $this->user->getDisplayName();
+    }
+
+    /**
+     * Get the service
+     *
+     * @see UserTokenInterface::getService
+     * @return string
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
+     * Check whether the user has been authenticated or not
+     *
+     * @see UserTokenInterface::isAuthenticated
+     * @return boolean
+     */
+    public function isAuthenticated()
+    {
+        if (! $this->getService()) {
+            return false;
+        }
+
+        if (__NAMESPACE__ . '\DummyUserWrapper' === get_class($this->user)) {
+            return false;
+        }
+
+        return true;
     }
 }

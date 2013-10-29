@@ -52,10 +52,15 @@ class UserWrapperFactory
     */
     public function factory($userObject)
     {
-        if ($userObject instanceof \Hybridauth\Entity\Profile) {
-            $userProxy = new HybridAuthUserWrapper();
-            $userProxy->setUser($userObject);
-            return $userProxy;
+        switch (get_class($userObject))
+        {
+            case 'Hybridauth\\Entity\\Profile':
+                $userProxy = new HybridAuthUserWrapper();
+                $userProxy->setUser($userObject);
+                return $userProxy;
+                break;
+            default:
+                return new DummyUserWrapper();
         }
 
         throw new \UnexpectedValueException(sprintf(

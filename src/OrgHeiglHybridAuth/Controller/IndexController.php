@@ -124,7 +124,7 @@ class IndexController extends AbstractActionController
           //  error_log(print_R($this->userWrapperFactory->factory($profile),true));
             $this->session->offsetSet('authenticated', $backend->isAuthorized());
             $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
-            $this->session->offsetSet('backend', $backend);
+            $this->session->offsetSet('backend', $provider);
         } catch (\Exception $e) {
             $this->session->offsetSet('authenticated', false);
         }

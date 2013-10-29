@@ -71,4 +71,11 @@ interface UserInterface
      * @return string
      */
     public function getLanguage();
+
+    /**
+     * Get the name to be displayed
+     *
+     * @return string
+     */
+    public function getDisplayName();
 }
