@@ -170,8 +170,13 @@ class IndexController extends AbstractActionController
      */
     public function backendAction()
     {
+        try {
+
         $endpoint = new Endpoint();
         $endpoint->process();
+        } catch(\Exception $e) {
+            //
+        }
         return false;
     }
 

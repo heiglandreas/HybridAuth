@@ -107,7 +107,7 @@ return array(
             'debug_mode' => false,
             'debug_file' => __DIR__ . '/hybrid_auth.log',
         ),
-        'backend'         => 'twitter',
+        'backend'         => 'Twitter',
 //        'backend'         => array('twitter'),
 //        'backend'         => array('twitter', 'facebook', '...'),
         'link'            => '<a class="hybridauth" href="%2$s">%1$s</a>', // Will be either inserted as first parameter into item or simply returned as complete entry
@@ -117,7 +117,7 @@ return array(
         'logoffcontainer' => '<li>%1$s</li>',
         'logoffstring'    => 'Logout %1$s',
         'loginstring'     => 'Login%1$s',
-        'listAttribs'     => null, // Will be inserted as 2nd parameter into item
+        'listAttribs'     => ' class="dropdown-menu"', // Will be inserted as 2nd parameter into item
         'itemAttribs'     => null, // Will be inserted as 2nd parameter into itemlist
 
     )

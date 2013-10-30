@@ -93,23 +93,21 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
         $config = $pluginManager->getServiceLocator()->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
 
-        $session = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthSession');
+        $token = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthToken');
 
         $urlHelper = $this->getViewHelper('url');
         $currentRoute = $this->getCurrentRoute();
-        $providers    = $config['provider'];
+        $providers    = $config['backend'];
 
-        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+        if ($token->isAuthenticated()) {
             // Display Logged in information
-            $user = $session->offsetGet('user');
             // TODO: This has to be localized
-            $user = sprintf($config['logoffstring'], $user->getName());
+            $user = sprintf($config['logoffstring'], $token->getName());
             $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
             $link = sprintf($config['link'], $user, $link);
             return sprintf($config['logoffcontainer'], $link);
         }
 
-        $xhtml = array();
         $backendList = $this->getBackends($providers);
 
         if (1 == count($backendList)) {
@@ -117,14 +115,16 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
                 $config['item'],
                 sprintf(
                     $config['link'],
-                    (is_string(key($backendList)?$backendList:current($backendList))),
-                    $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => current($backendList)))
+                    current($backendList),
+                    $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => current($backendList)))
                 ),
                 null
             );
         }
+
+        $xhtml = array();
         foreach ($backendList as $name => $backend) {
-            $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute, 'provider' => $backend));
+            $link = $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => $backend));
             $xhtml[] = sprintf(
                 $config['item'],
                 sprintf(
@@ -136,14 +136,16 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
             );
         }
 
-
         return sprintf(
             $config['logincontainer'],
-            $config['loginstring'],
+            sprintf(
+                $config['loginstring'],
+                ' using'
+            ),
             sprintf(
                 $config['itemlist'],
-                $config['listAttribs'],
-                implode("\n",$xhtml)
+                implode("\n",$xhtml),
+                $config['listAttribs']
             )
         );
 
@@ -164,13 +166,13 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
 
         $backends = (array) $backends;
 
-        foreach ($backends as $item => $value) {
-            if (is_string($item)) {
-                continue;
-            }
-            $backends[strtolower($value)] = $value;
-            unset($backends[$item]);
-        }
+//        foreach ($backends as $item => $value) {
+//            if (is_string($item)) {
+//                continue;
+//            }
+//            $backends[strtolower($value)] = $value;
+//            unset($backends[$item]);
+//        }
 
         return $backends;
     }
