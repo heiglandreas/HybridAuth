@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/heiglandreas/HybridAuth.png?branch=master)](https://travis-ci.org/heiglandreas/HybridAuth)
 [![Latest Stable Version](https://poser.pugx.org/org_heigl/hybridauth/v/stable.png)](https://packagist.org/packages/org_heigl/hybridauth)
 [![Total Downloads](https://poser.pugx.org/org_heigl/hybridauth/downloads.png)](https://packagist.org/packages/org_heigl/hybridauth)
+[![Stories in Ready](https://badge.waffle.io/heiglandreas/HybridAuth.png?label=ready)](https://waffle.io/heiglandreas/HybridAuth)  
+
 
 Use the HybridAuth-Library to create an absolute lightweight Authentication-Layer
 for your ZendFramework2-App
