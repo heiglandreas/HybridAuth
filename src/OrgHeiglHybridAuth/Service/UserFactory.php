@@ -66,7 +66,7 @@ class UserFactory implements FactoryInterface
         if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
             // Display Logged in information
             $user = $session->offsetGet('user');
-            $service = $session->offsetGet('service');
+            $service = $session->offsetGet('backend');
 
         }
 
