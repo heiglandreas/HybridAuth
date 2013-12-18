@@ -115,7 +115,10 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
                 $config['item'],
                 sprintf(
                     $config['link'],
-                    current($backendList),
+                    sprintf(
+                        $config['loginstring'],
+                        ' using ' . current($backendList)
+                    ),
                     $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => current($backendList)))
                 ),
                 null
