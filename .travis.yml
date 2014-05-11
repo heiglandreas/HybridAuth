@@ -17,7 +17,9 @@ matrix:
   - 5.6
   - hhvm
 
-
+matrix:
+  allow_failures:
+    - php: hhvm
 
 before_install:
  - php composer.phar self-update
