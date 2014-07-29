@@ -52,7 +52,7 @@ class UserWrapperFactory
     */
     public function factory($userObject)
     {
-        switch (get_class($userObject))
+        switch (get_parent_class($userObject))
         {
             case 'Hybridauth\\Entity\\Profile':
                 $userProxy = new HybridAuthUserWrapper();
