@@ -44,28 +44,16 @@ namespace OrgHeiglHybridAuth;
  */
 class UserWrapperFactory
 {
-   /**
-    * Create the user-Proxy according to the given User-Object
-    *
-    * @return UserInterface
-    * @throws \UnexpectedValueException
-    */
-    public function factory($userObject)
+    /**
+     * Create the user-Proxy according to the given User-Object
+     *
+     * @param \Hybridauth\Entity\Profile $userObject
+     * @return UserInterface
+     */
+    public function factory(\Hybridauth\Entity\Profile $userObject)
     {
-        switch (get_parent_class($userObject))
-        {
-            case 'Hybridauth\\Entity\\Profile':
-                $userProxy = new HybridAuthUserWrapper();
-                $userProxy->setUser($userObject);
-                return $userProxy;
-                break;
-            default:
-                throw new \UnexpectedValueException(sprintf(
-                    'The given Object could not be found. Found "%s" instead',
-                    get_Class($userObject)
-                ));
-        }
-        throw new \UnexpectedValueException('The given Object could not be found');
-        return false;
+        $userProxy = new HybridAuthUserWrapper();
+        $userProxy->setUser($userObject);
+        return $userProxy;
     }
 }
