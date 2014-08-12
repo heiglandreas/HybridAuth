@@ -52,7 +52,7 @@ class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreationWithUnknownUserObject()
     {
         $factory = new UserWrapperFactory();
-        $userObj = $this->getMock('Hybridauth\\Entity\\Profile');
+        $userObj = new \ArrayObject();
         $factory->factory($userObj);
     }
 }
