@@ -56,11 +56,11 @@ class UserWrapperFactory
             $userProxy = new HybridAuthUserWrapper();
             $userProxy->setUser($userObject);
             return $userProxy;
-        } else {
-            throw new \UnexpectedValueException(sprintf(
-                'The given Object could not be found. Found "%s" instead',
-                get_Class($userObject)
-            ));
         }
+
+        throw new \UnexpectedValueException(sprintf(
+            'The given Object could not be found. Found "%s" instead',
+            get_Class($userObject)
+        ));
     }
 }
