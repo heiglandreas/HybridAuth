@@ -1,5 +1,7 @@
 # OrgHeiglHybridAuth
 
+[![Join the chat at https://gitter.im/heiglandreas/HybridAuth](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/heiglandreas/HybridAuth?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/heiglandreas/HybridAuth.png?branch=master)](https://travis-ci.org/heiglandreas/HybridAuth)
 [![Latest Stable Version](https://poser.pugx.org/org_heigl/hybridauth/v/stable.png)](https://packagist.org/packages/org_heigl/hybridauth)
 [![Total Downloads](https://poser.pugx.org/org_heigl/hybridauth/downloads.png)](https://packagist.org/packages/org_heigl/hybridauth)
