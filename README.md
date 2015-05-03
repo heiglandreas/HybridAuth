@@ -17,7 +17,7 @@ SocialNetwork users in your application you can use these to authorize your user
 
 ## Requirements
 
-* The [hybridAuth-library](http://hybridauth.sourceforge.net)
+* The [hybridAuth-library](http://hybridauth.sourceforge.net). This lib uses the version 3!
 * Zend Framework2 (well, obvious, isn't it?)
 
 ## Usage
@@ -60,9 +60,40 @@ SocialNetwork users in your application you can use these to authorize your user
 
 ## Installation
 
-This module is best installed using [composer](http://packagist.org/packages/org_heigl/hybridauth). For that, add the
-following line to the ```require```-section of your ```composer.json```-file and run composer.
+### composer
 
-    "org_heigl/hybridauth": "dev-master"
+This module is best installed using [composer](http://packagist.org/packages/org_heigl/hybridauth).
+For that, run the following command to add the library to your app:
 
+    composer require org_heigl/hybridauth
+
+### Manual installation
+
+So you want it the hard way? Sure you don't want to give composer a try?
+
+OK, you wanted it that way. But don't blame me!
+
+I have to assume some things here:
+
+* You have a dedicated ```vendor```-Folder where you install all your external libraries.
+* Inside that vendor-Folder you have a subfolder for each vendor.
+* Inside a vendor-subfolder you have subfolders for the actual library
+  (Yes, that's the way composer organizes the files!)
+  So your ZF-Library is installed inside ```vendor/zendframework/zendframework```.
+* You have the ZF2-autoloader set up successfully.
+
+So from there you'll have to follow these steps:
+
+* Download the [Hybridauth-library](http://hybridauth.sourceforge.net/) to a folder ```vendor/hybridauth/hybridauth```
+* Download this library to a folder ```vendor/org_heigl/hybridauth```
+* Run the script ```vendor/org_heigl/hybridauth/bin/createAutoloadSupport.php```
+
+Now you should be up and running to follow the steps outlined in the [Usage]-section.
+
+Note that you can either download the zip-files of the libraries or use the git submodule command to clone the
+libs into the appropriate folders. You should **not** simply use ```git clone <library> <target>``` as that might
+interfere with your local git-repo (when you use one). The submodule approach makes Lib-updates easier bun can
+end in a lot of headaches due to the caveats of the submodule-command! I can not provide you with support in that case!
 Alternatively you can fork the project at [github](https://github.com/heiglandreas/OrgHeiglHybridAuth).
+
+
