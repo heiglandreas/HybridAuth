@@ -95,12 +95,19 @@ class Module
     
     public function getAutoloaderConfig()
     {
-    	return array(
-    			'Zend\Loader\StandardAutoloader' => array(
-    					'namespaces' => array(
-    							__NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-    					),
-    			),
-    	);
+        $config = array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
+                    'Hybridauth' => dirname(dirname(__DIR__)) . "/vendor/hybridauth/hybridauth/Hybrid"
+                )
+            )
+        );
+
+        if (file_exists(__DIR__ . '/autoload_classmap.php')) {
+            $config['Zend\Loader\ClassMapAutoloader'] = array(__DIR__ . '/autoload_classmap.php');
+        }
+
+        return $config;
     }
 }
