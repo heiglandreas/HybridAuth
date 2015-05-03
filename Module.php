@@ -105,7 +105,7 @@ class Module
         );
 
         if (file_exists(__DIR__ . '/autoload_classmap.php')) {
-            $config['Zend\Loader\ClassMapAutoloader'] = [__DIR__ . '/autoload_classmap.php'];
+            $config['Zend\Loader\ClassMapAutoloader'] = array(__DIR__ . '/autoload_classmap.php');
         }
 
         return $config;
