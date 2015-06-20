@@ -55,6 +55,7 @@ class UserWrapperFactory
         switch (get_class($userObject))
         {
             case 'Hybridauth\\Entity\\Profile':
+            case 'Hybridauth\\Entity\\Twitter\\Profile':
                 $userProxy = new HybridAuthUserWrapper();
                 $userProxy->setUser($userObject);
                 return $userProxy;
