@@ -17,7 +17,7 @@ SocialNetwork users in your application you can use these to authorize your user
 
 ## Requirements
 
-* The [hybridAuth-library](http://hybridauth.sourceforge.net). This lib uses the version 3!
+* The [hybridAuth-library](http://hybridauth.sourceforge.net). This lib uses the version 3 which is not (yet) stable!
 * Zend Framework2 (well, obvious, isn't it?)
 
 ## Usage
@@ -65,7 +65,17 @@ SocialNetwork users in your application you can use these to authorize your user
 This module is best installed using [composer](http://packagist.org/packages/org_heigl/hybridauth).
 For that, run the following command to add the library to your app:
 
+    # Require the unstable dependency to enable installation with min-requirement "stable"
+    composer require --no-update hybridauth/hybridauth:@dev
+    # Require the hybridauth-module
     composer require org_heigl/hybridauth
+    
+If you want to use more than one authentication-provider you should instead run this:
+
+    # Require the unstable dependency to enable installation with min-requirement "stable"
+    composer require --no-update hybridauth/hybridauth:@dev
+    # Require the hybridauth-module
+    composer require org_heigl/hybridauth:dev-feature/multipleProviders
 
 ### Manual installation
 
