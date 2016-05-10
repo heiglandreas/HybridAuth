@@ -31,7 +31,6 @@
 namespace OrgHeiglHybridAuth\View\Helper;
 
 use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
-use Zend\Session\Container as SessionContainer;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
 
@@ -90,34 +89,95 @@ class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
      */
     public function __invoke($provider = null)
     {
-        if (!$provider) {
-            $pluginManager = $this->getServiceLocator();
-            $config = $pluginManager->getServiceLocator()->get('Config');
-            $provider = $config['OrgHeiglHybridAuth']['backend'];
-        }
+        $pluginManager = $this->getServiceLocator();
+        $config = $pluginManager->getServiceLocator()->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
 
-        $xhtml = '<a class="hybridauth" href="%2$s">%1$s</a>';
-
-        //$session = new SessionContainer('orgheiglhybridauth');
-        $session = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthSession');
+        $token = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthToken');
 
         $urlHelper = $this->getViewHelper('url');
         $currentRoute = $this->getCurrentRoute();
+        $providers    = $config['backend'];
 
-        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+        if ($token->isAuthenticated()) {
             // Display Logged in information
-            $user = $session->offsetGet('user');
             // TODO: This has to be localized
-            $user = 'Logout ' . $user->getName();
+            $user = sprintf($config['logoffstring'], $token->getName());
             $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
-        } else {
-            // Display login-button
-            // TODO: This has to be localized
-            $user = 'Login';
-            $link = $urlHelper('hybridauth/login', array('provider' => $provider, 'redirect' => $currentRoute));
+            $link = sprintf($config['link'], $user, $link);
+            return sprintf($config['logoffcontainer'], $link);
         }
 
-        return sprintf($xhtml, $user, $link);
+        $backendList = $this->getBackends($providers);
+
+        if (1 == count($backendList)) {
+            return sprintf(
+                $config['item'],
+                sprintf(
+                    $config['link'],
+                    sprintf(
+                        $config['loginstring'],
+                        ' using ' . current($backendList)
+                    ),
+                    $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => current($backendList)))
+                ),
+                null
+            );
+        }
+
+        $xhtml = array();
+        foreach ($backendList as $name => $backend) {
+            $link = $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => $backend));
+            $xhtml[] = sprintf(
+                $config['item'],
+                sprintf(
+                    $config['link'],
+                    (is_string($name)?$name:$backend),
+                    $link
+                ),
+                $config['itemAttribs']
+            );
+        }
+
+        return sprintf(
+            $config['logincontainer'],
+            sprintf(
+                $config['loginstring'],
+                ' using'
+            ),
+            sprintf(
+                $config['itemlist'],
+                implode("\n",$xhtml),
+                $config['listAttribs']
+            )
+        );
+
+    }
+
+    /**
+     * Get the backends
+     *
+     * @return array
+     */
+    public function getBackends($backends = null)
+    {
+        if (null === $backends) {
+            $pluginManager = $this->getServiceLocator();
+            $config = $pluginManager->getServiceLocator()->get('Config');
+            $backends = $config['OrgHeiglHybridAuth']['backend'];
+        }
+
+        $backends = (array) $backends;
+
+//        foreach ($backends as $item => $value) {
+//            if (is_string($item)) {
+//                continue;
+//            }
+//            $backends[strtolower($value)] = $value;
+//            unset($backends[$item]);
+//        }
+
+        return $backends;
     }
 
     /**

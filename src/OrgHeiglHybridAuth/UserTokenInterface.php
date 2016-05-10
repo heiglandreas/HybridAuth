@@ -32,7 +32,7 @@
 namespace OrgHeiglHybridAuth;
 
 /**
- * This class works as factory to get an Object implementing the UserInterface
+ * This interface describes methods to access user-informations
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -42,31 +42,21 @@ namespace OrgHeiglHybridAuth;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class UserWrapperFactory
+interface UserTokenInterface extends UserInterface
 {
-   /**
-    * Create the user-Proxy according to the given User-Object
-    *
-    * @return UserInterface
-    * @throws \UnexpectedValueException
-    */
-    public function factory($userObject)
-    {
-        switch (get_class($userObject))
-        {
-            case 'Hybridauth\\Entity\\Profile':
-            case 'Hybridauth\\Entity\\Twitter\\Profile':
-                $userProxy = new HybridAuthUserWrapper();
-                $userProxy->setUser($userObject);
-                return $userProxy;
-                break;
-            default:
-                return new DummyUserWrapper();
-        }
+    /**
+     * Get the service the user has been authenticated with
+     *
+     * This method has to return FALSE if no authentication has been performed
+     *
+     * @return string|false
+     */
+    public function getService();
 
-        throw new \UnexpectedValueException(sprintf(
-            'The given Object could not be found. Found "%s" instead',
-            get_Class($userObject)
-        ));
-    }
+    /**
+     * Check whether the user has been authenticated at all.
+     *
+     * @return boolean
+     */
+    public function isAuthenticated();
 }

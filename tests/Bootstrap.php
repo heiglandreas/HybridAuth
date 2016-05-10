@@ -53,6 +53,8 @@ ini_set ( 'memory_limit', '512M');
 
 mb_internal_encoding('UTF-8');
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 class Bootstrap
 {
     protected static $serviceManager;
@@ -94,6 +96,7 @@ class Bootstrap
         $config = ArrayUtils::merge($baseConfig, $testConfig);
 
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
+        $serviceManager->setAllowOverride(true);
         $serviceManager->setService('ApplicationConfig', $config);
         $serviceManager->get('ModuleManager')->loadModules();
 
@@ -101,6 +104,9 @@ class Bootstrap
         static::$config = $config;
     }
 
+    /**
+     * @return Zend\ServiceManager\ServiceManager
+     */
     public static function getServiceManager()
     {
         return static::$serviceManager;

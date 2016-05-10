@@ -13,9 +13,12 @@
         "role" : "Developer"
     }],
     "require" : {
-        "php" : ">=5.3.0",
+        "php" : ">=5.4.0",
         "zendframework/zendframework": "~2.1",
-        "hybridauth/hybridauth": "~3.0"
+        "hybridauth/hybridauth": "~3.0@dev"
+    },
+    "require-dev" : {
+        "mockery/mockery": "dev-master"
     },
     "autoload" : {
         "psr-0" : {
@@ -25,5 +28,6 @@
             "./"
         ]
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable",
+    "prefer-stable" : true
 }
