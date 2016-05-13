@@ -78,22 +78,26 @@ class UserFactory implements FactoryInterface
 
     }
 
-    /**
-     * Get the base URI for the current controller
-     *
-     * @return string
-     */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
-    {
-        $router = $sl->get('router');
-        $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $session = $container->get('OrgHeiglHybridAuthSession');
+        $user = new DummyUserWrapper();
+        $service = '';
+        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+            // Display Logged in information
+            $user = $session->offsetGet('user');
+            $service = $session->offsetGet('backend');
 
-        $request = $sl->get('request');
-        $basePath = $request->getBasePath();
-        $uri = new \Zend\Uri\Uri($request->getUri());
-        $uri->setPath($basePath);
-        $uri->setQuery(array());
-        $uri->setFragment('');
-        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
+        }
+
+        $userToken = new UserToken();
+        $userToken->setService($service)
+                  ->setUser($user);
+
+        return $userToken;
+
     }
 }

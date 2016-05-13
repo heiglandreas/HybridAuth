@@ -63,4 +63,16 @@ class SessionFactory implements FactoryInterface
 
         return new SessionContainer($config['session_name']);
     }
+
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        return new SessionContainer($config['session_name']);
+
+    }
 }

@@ -31,17 +31,25 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use OrgHeiglHybridAuthTests\ServiceManagerGrabber;
 use \PHPUnit_Framework_TestCase;
 use \OrgHeiglHybridAuth\Service\SessionFactory;
 
 class SessionFactoryTest extends PHPUnit_Framework_TestCase
 {
+    protected $serviceManager;
+
+    public function setUp()
+    {
+        $serviceManagerGrabber = new ServiceManagerGrabber();
+        $this->serviceManager  = $serviceManagerGrabber->getServiceManager();
+    }
+
     public function testSessionCreation()
     {
         $factory = new SessionFactory();
         $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
-        $session = $factory->createService($servicemanager);
+        $session = $factory->createService($this->serviceManager);
         $this->assertInstanceof('\Zend\Session\Container', $session);
     }
 }

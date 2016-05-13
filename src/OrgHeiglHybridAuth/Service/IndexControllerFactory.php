@@ -71,4 +71,21 @@ class IndexControllerFactory implements FactoryInterface
                    ->setUserWrapperFactory($wrapperFactory);
         return $controller;
     }
+
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+
+        $authenticator  = $container->get('OrgHeiglHybridAuthBackend');
+        $session        = $container->get('OrgHeiglHybridAuthSession');
+        $wrapperFactory = $container->get('OrgHeiglHybridAuth\UserWrapperFactory');
+
+        $controller = new IndexController();
+        $controller->setSession($session)
+                   ->setAuthenticator($authenticator)
+                   ->setUserWrapperFactory($wrapperFactory);
+        return $controller;
+    }
 }

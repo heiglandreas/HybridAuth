@@ -34,7 +34,6 @@ use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -48,7 +47,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since     05.12.2012
  * @link      http://github.com/heiglandreas/OrgHeiglHybridAuth
  */
-class HybridAuth extends HtmlElement implements ServiceLocatorAwareInterface
+class HybridAuth extends HtmlElement
 {
     /**
      * The ViewHelper-Servicemanager
