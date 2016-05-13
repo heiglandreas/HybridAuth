@@ -31,16 +31,24 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use OrgHeiglHybridAuthTests\ServiceManagerGrabber;
 use \PHPUnit_Framework_TestCase;
 use \OrgHeiglHybridAuth\Service\IndexControllerFactory;
 
 class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
 {
+    protected $serviceManager;
+
+    public function setUp()
+    {
+        $serviceManagerGrabber   = new ServiceManagerGrabber();
+        $this->serviceManager = $serviceManagerGrabber->getServiceManager();
+    }
+
     public function testSessionCreation()
     {
         $factory = new IndexControllerFactory();
         $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';
@@ -48,10 +56,10 @@ class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->markTestIncomplete('Testing inomplete due to routing issues');
 
-//        $controller = $factory->createService($servicemanager);
-//        $this->assertInstanceof('\OrgHeiglHybridAuth\Controller\IndexController', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthSession'), 'session', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthBackend'), 'authenticator', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuth\UserWrapperFactory'), 'userWrapperFactory', $controller);
+        $controller = $factory->createService($this->servicemanager);
+        $this->assertInstanceof('\OrgHeiglHybridAuth\Controller\IndexController', $controller);
+        $this->assertAttributeEquals($this->servicemanager->get('OrgHeiglHybridAuthSession'), 'session', $controller);
+        $this->assertAttributeEquals($this->servicemanager->get('OrgHeiglHybridAuthBackend'), 'authenticator', $controller);
+        $this->assertAttributeEquals($this->servicemanager->get('OrgHeiglHybridAuth\UserWrapperFactory'), 'userWrapperFactory', $controller);
     }
 }

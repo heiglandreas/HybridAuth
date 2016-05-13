@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use \Zend\ServiceManager;
 use \Zend\Session\Container as SessionContainer;
 use \Zend\ServiceManager\FactoryInterface;
@@ -62,5 +63,17 @@ class SessionFactory implements FactoryInterface
         $config = $config['OrgHeiglHybridAuth'];
 
         return new SessionContainer($config['session_name']);
+    }
+
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        return new SessionContainer($config['session_name']);
+
     }
 }

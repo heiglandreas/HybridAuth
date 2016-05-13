@@ -31,17 +31,25 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use OrgHeiglHybridAuthTests\ServiceManagerGrabber;
 use \PHPUnit_Framework_TestCase;
 use \Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
 use \OrgHeiglHybridAuth\Service\HybridAuthFactory;
 
 class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
 {
+    protected $serviceManager;
+
+    public function setUp()
+    {
+        $serviceManagerGrabber   = new ServiceManagerGrabber();
+        $this->serviceManager = $serviceManagerGrabber->getServiceManager();
+    }
+
     public function testSessionCreation()
     {
         $factory = new HybridAuthFactory();
         $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';
@@ -49,8 +57,8 @@ class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
 
         $this->markTestIncomplete('Testing inomplete due to routing issues');
 
-//        $servicemanager->get('router')->addRoute('hybridauth/backend',array('options'=> array('route'=>'test')));
-//        $authInst = $factory->createService($servicemanager);
-//        $this->assertInstanceof('\Hybrid_Auth', $authInst);
+        $this->servicemanager->get('router')->addRoute('hybridauth/backend',array('options'=> array('route'=>'test')));
+        $authInst = $factory->createService($servicemanager);
+        $this->assertInstanceof('\Hybrid_Auth', $authInst);
     }
 }

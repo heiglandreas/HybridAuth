@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager;
 use Hybridauth\Hybridauth;
 use Zend\ServiceManager\FactoryInterface;
@@ -61,8 +62,22 @@ class HybridAuthFactory implements FactoryInterface
         $config = $services->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
 
-        $config['hybrid_auth']['base_url'] = $this->getBackendUrl($services);
+        $config['hybrid_auth']['base_url'] = $this->getBackendUrl($services->get('router'), $services->get('request'));
 
+
+        $hybridAuth = new Hybridauth($config['hybrid_auth']);
+        return $hybridAuth;
+    }
+
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        $config['hybrid_auth']['base_url'] = $this->getBackendUrl($container->get('router'), $container->get('request'));
 
         $hybridAuth = new Hybridauth($config['hybrid_auth']);
         return $hybridAuth;
@@ -73,12 +88,10 @@ class HybridAuthFactory implements FactoryInterface
      *
      * @return string
      */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
+    protected function getBackendUrl($router, $request)
     {
-        $router = $sl->get('router');
         $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
 
-        $request = $sl->get('request');
         $basePath = $request->getBasePath();
         $uri = new \Zend\Uri\Uri($request->getUri());
         $uri->setPath($basePath);

@@ -119,6 +119,7 @@ return array(
         'loginstring'     => 'Login%1$s',
         'listAttribs'     => ' class="dropdown-menu"', // Will be inserted as 2nd parameter into item
         'itemAttribs'     => null, // Will be inserted as 2nd parameter into itemlist
+        'session_name'    => 'HybridAuth',
 
     )
 );

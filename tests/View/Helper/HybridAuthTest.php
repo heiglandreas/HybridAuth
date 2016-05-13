@@ -32,6 +32,7 @@
 namespace OrgHeiglHybridAuthTest\View\Helper;
 
 use Mockery as M;
+use OrgHeiglHybridAuth\UserToken;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 
@@ -94,12 +95,43 @@ class HybridAuthTest extends \PHPUnit_Framework_TestCase
 
     protected function getServiceManager()
     {
-        $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(
-                array()
-            )
-        );
+        $serviceManager = new ServiceManager([]);
 
         return $serviceManager;
     }
+
+    /**
+     * @dataProvider gettingPlainLinkWorksAsExpectedProvider
+     */
+    public function testThatGettingPlainLinkWorksAsExpected($backend, $request)
+    {
+        $routeMatch    = M::mock('Zend\Router\RouteMatch');
+        $routeMatch->shouldReceive('getMatchedRouteName')->andReturn('foo');
+        $pluginManager = M::mock('Zend\View\HelperPluginManager');
+        $pluginManager->shouldReceive('getServiceLocator')->andReturn($this->locator);
+        $pluginManager->shouldReceive('get')->andReturn(function($a){return $a;});
+        $mvcEvent = M::mock('Zend\Mvc\MvcEvent');
+        $mvcEvent->shouldReceive('getRouteMatch')->andReturn($routeMatch);
+        $this->locator->setService('Config', array('OrgHeiglHybridAuth' => array('backend' => $backend)));
+        $this->locator->setService('OrgHeiglHybridAuthToken', new UserToken());
+
+        $viewHelper = new \OrgHeiglHybridAuth\View\Helper\HybridAuth($pluginManager, $mvcEvent);
+        $viewHelper->setServiceLocator($this->locator);
+
+        //  $this->assertEquals($expected, $viewHelper->getBackends());
+        $this->assertEquals('hybridauth/login', $viewHelper($request));
+
+
+    }
+
+    public function gettingPlainLinkWorksAsExpectedProvider()
+    {
+        return [
+            [['foo' => []], 'foo'],
+            [['bar' => []], 'bar'],
+            [['baz' => []], 'baz'],
+        ];
+    }
+
+
 }

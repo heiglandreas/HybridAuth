@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use \Zend\ServiceManager;
 use \Zend\Session\Container as SessionContainer;
 use \OrgHeiglHybridAuth\Controller\IndexController;
@@ -64,6 +65,23 @@ class IndexControllerFactory implements FactoryInterface
         $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
         $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
         $wrapperFactory = $serviceLocator->get('OrgHeiglHybridAuth\UserWrapperFactory');
+
+        $controller = new IndexController();
+        $controller->setSession($session)
+                   ->setAuthenticator($authenticator)
+                   ->setUserWrapperFactory($wrapperFactory);
+        return $controller;
+    }
+
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+
+        $authenticator  = $container->get('OrgHeiglHybridAuthBackend');
+        $session        = $container->get('OrgHeiglHybridAuthSession');
+        $wrapperFactory = $container->get('OrgHeiglHybridAuth\UserWrapperFactory');
 
         $controller = new IndexController();
         $controller->setSession($session)
