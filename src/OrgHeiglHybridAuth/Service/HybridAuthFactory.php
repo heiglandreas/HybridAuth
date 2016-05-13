@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager;
 use Hybridauth\Hybridauth;
 use Zend\ServiceManager\FactoryInterface;

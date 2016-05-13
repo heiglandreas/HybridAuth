@@ -23,7 +23,8 @@
     },
     "require-dev" : {
         "mockery/mockery": "dev-master",
-        "phpunit/phpunit": "^5.3",
+        "phpunit/phpunit": "^4.8 || ^5.0",
+        "fabpot/php-cs-fixer": "^1.7",
         "zendframework/zend-modulemanager": "^2.7",
         "zendframework/zend-serializer": "^2.7",
         "zendframework/zend-log": "^2.8",
@@ -43,5 +44,16 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable" : true
+    "prefer-stable" : true,
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "upload-coverage": "coveralls -v",
+        "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v",
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-clover clover.xml"
+    }
 }

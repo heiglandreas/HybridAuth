@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\UserToken;
 use Zend\ServiceManager;

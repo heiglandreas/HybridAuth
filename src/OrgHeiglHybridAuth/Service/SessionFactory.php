@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
 use \Zend\ServiceManager;
 use \Zend\Session\Container as SessionContainer;
 use \Zend\ServiceManager\FactoryInterface;

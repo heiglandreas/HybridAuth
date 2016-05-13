@@ -109,7 +109,7 @@ class HybridAuth extends HtmlElement
 
         $backendList = $this->getBackends($providers);
 
-        if (null !== $provider && in_array($provider, $backendList)) {
+        if (null !== $provider && isset($backendList[$provider])) {
             return $urlHelper(
                 'hybridauth/login',
                 array('redirect' => $currentRoute, 'provider' => $provider)
