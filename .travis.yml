@@ -12,6 +12,7 @@ matrix:
   allow_failures:
     - php: hhvm
     - php: nightly
+    - php: 5.5
 
 before_install:
  - php composer.phar self-update
