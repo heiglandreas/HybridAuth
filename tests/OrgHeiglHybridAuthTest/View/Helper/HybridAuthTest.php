@@ -94,11 +94,7 @@ class HybridAuthTest extends \PHPUnit_Framework_TestCase
 
     protected function getServiceManager()
     {
-        $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(
-                array()
-            )
-        );
+        $serviceManager = new ServiceManager([]);
 
         return $serviceManager;
     }

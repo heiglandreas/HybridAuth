@@ -30,9 +30,13 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager;
 use Hybridauth\Hybridauth;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -56,7 +60,7 @@ class HybridAuthFactory implements FactoryInterface
      * @see \Zend\ServiceManager\FactoryInterface::createService()
      * @return Hybrid_Auth
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function createService(ContainerInterface $services)
     {
         $config = $services->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
@@ -86,4 +90,24 @@ class HybridAuthFactory implements FactoryInterface
         $uri->setFragment('');
         return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
     }
-}
+
+    /**
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        return $this->createService($container);
+}}

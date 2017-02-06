@@ -31,17 +31,20 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use Interop\Container\ContainerInterface;
 use \PHPUnit_Framework_TestCase;
 use \Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
 use \OrgHeiglHybridAuth\Service\HybridAuthFactory;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Mockery as M;
 
 class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testSessionCreation()
     {
         $factory = new HybridAuthFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';

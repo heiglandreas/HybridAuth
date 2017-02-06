@@ -31,16 +31,19 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use Interop\Container\ContainerInterface;
 use \PHPUnit_Framework_TestCase;
 use \OrgHeiglHybridAuth\Service\IndexControllerFactory;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Mockery as M;
 
 class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testSessionCreation()
     {
         $factory = new IndexControllerFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';

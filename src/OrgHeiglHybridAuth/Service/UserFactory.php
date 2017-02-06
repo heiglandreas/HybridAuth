@@ -30,11 +30,15 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\UserToken;
 use Zend\ServiceManager;
 use Hybridauth\Hybridauth;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -58,7 +62,7 @@ class UserFactory implements FactoryInterface
      * @see \Zend\ServiceManager\FactoryInterface::createService()
      * @return Hybrid_Auth
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function createService(ContainerInterface $services)
     {
         $session = $services->get('OrgHeiglHybridAuthSession');
         $user = new DummyUserWrapper();
@@ -83,7 +87,7 @@ class UserFactory implements FactoryInterface
      *
      * @return string
      */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
+    protected function getBackendUrl(ContainerInterface $sl)
     {
         $router = $sl->get('router');
         $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
@@ -95,5 +99,26 @@ class UserFactory implements FactoryInterface
         $uri->setQuery(array());
         $uri->setFragment('');
         return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
+    }
+
+    /**
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
+     */
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        return $this->createService($container);
     }
 }

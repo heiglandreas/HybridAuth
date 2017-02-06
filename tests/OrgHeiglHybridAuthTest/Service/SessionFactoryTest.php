@@ -31,16 +31,23 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use Interop\Container\ContainerInterface;
 use \PHPUnit_Framework_TestCase;
 use \OrgHeiglHybridAuth\Service\SessionFactory;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Mockery as M;
 
 class SessionFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testSessionCreation()
     {
         $factory = new SessionFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
+        $servicemanager->shouldReceive('get')
+                       ->with('Config')
+                       ->andReturn(['OrgHeiglHybridAuth' => ['session_name' => 'foo']]);
+
         $session = $factory->createService($servicemanager);
         $this->assertInstanceof('\Zend\Session\Container', $session);
     }

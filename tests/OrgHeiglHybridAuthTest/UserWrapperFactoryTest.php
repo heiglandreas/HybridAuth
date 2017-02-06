@@ -31,10 +31,10 @@
 
 namespace OrgHeiglHybridAuthTest;
 
-use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\UserWrapperFactory;
-use \Hybridauth\Entity\Profile;
-
+use PHPUnit_Framework_TestCase;
+use OrgHeiglHybridAuth\UserWrapperFactory;
+use Hybridauth\Entity\Profile;
+use Mockery as M;
 
 class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
 {
@@ -49,7 +49,7 @@ class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreationWithUnknownUserObject()
     {
         $factory = new UserWrapperFactory();
-        $userObj = $this->getMock('Hybridauth\\Entity\\Profile');
+        $userObj = M::mock(Hybridauth\Entity\Profile::class);
         $obj = $factory->factory($userObj);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
         $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);

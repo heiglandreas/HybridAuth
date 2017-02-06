@@ -32,9 +32,11 @@
 namespace OrgHeiglHybridAuthTest;
 
 
+use Interop\Container\ContainerInterface;
 use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\Service\UserFactory;
 use Mockery as M;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class UserFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,15 +44,15 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreationOfUserTokenWithUnauthenticatedSession()
     {
         $factory = new UserFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
         $session = M::mock('\Zend\Session\Container')
                  ->shouldReceive('offsetExists')
                  ->once()
                  ->with('authenticated')
                  ->andReturn(false)
                  ->mock();
-        $servicemanager->setService('OrgHeiglHybridAuthSession', $session);
+        $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
         $token = $factory->createService($servicemanager);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
@@ -63,8 +65,8 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreationOfUserTokenWithAuthenticatedSessionWithInValidAuthentication()
     {
         $factory = new UserFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
             ->once()
@@ -74,7 +76,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
             ->once()
             ->with('authenticated')
             ->andReturn(false)->mock();
-        $servicemanager->setService('OrgHeiglHybridAuthSession', $session);
+        $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
         $token = $factory->createService($servicemanager);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
@@ -86,8 +88,8 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreationOfUserTokenWithAuthenticatedSessionWithValidAuthentication()
     {
         $factory = new UserFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
         $user = M::mock('OrgHeiglHybridAuth\HybridAuthUserWrapper');
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
@@ -97,7 +99,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
         $session->shouldReceive('offsetGet')
             ->times(3)
             ->andReturn(true, $user, 'twitter')->mock();
-        $servicemanager->setService('OrgHeiglHybridAuthSession', $session);
+        $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
         $token = $factory->createService($servicemanager);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
@@ -110,8 +112,8 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->markTestIncomplete('Proper handling of invalid arguments especialy with non-user-objects is missing');
         $factory = new UserFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
         $user = M::mock('OrgHeiglHybridAuth\HybridAuthUserWrapper');
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
@@ -121,7 +123,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
         $session->shouldReceive('offsetGet')
             ->times(3)
             ->andReturn(true, null, null)->mock();
-        $servicemanager->setService('OrgHeiglHybridAuthSession', $session);
+        $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
         $token = $factory->createService($servicemanager);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
