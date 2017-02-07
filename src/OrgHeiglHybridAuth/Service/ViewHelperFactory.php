@@ -32,12 +32,15 @@ namespace OrgHeiglHybridAuth\Service;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
-use Zend\ServiceManager;
-use Hybridauth\Hybridauth;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use OrgHeiglHybridAuth\View\Helper\HybridAuth;
+use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Controller\ControllerManager;
+use Zend\Mvc\MvcEvent;
+use Zend\Router\Http\TreeRouteStack;
+use Zend\Router\Http\RouteMatch;
+use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the HybridAuth
@@ -50,49 +53,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class HybridAuthFactory implements FactoryInterface
+class ViewHelperFactory implements FactoryInterface
 {
-    /**
-     * Create the service using the configuration from the modules config-file
-     *
-     * @param ServiceLocator $services The ServiceLocator
-     *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
-     */
-    public function createService(ContainerInterface $services)
-    {
-        $config = $services->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
-
-        if (! isset($config['hybrid_auth']['base_url'])) {
-            $config['hybrid_auth']['base_url'] = $this->getBackendUrl($services);
-        }
-
-
-        $hybridAuth = new Hybridauth($config['hybrid_auth']);
-        return $hybridAuth;
-    }
-
-    /**
-     * Get the base URI for the current controller
-     *
-     * @return string
-     */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
-    {
-        $router = $sl->get('router');
-        $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
-
-        $request = $sl->get('request');
-        $basePath = $request->getBasePath();
-        $uri = new \Zend\Uri\Uri($request->getUri());
-        $uri->setPath($basePath);
-        $uri->setQuery(array());
-        $uri->setFragment('');
-        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
-    }
-
     /**
      * Create an object
      *
@@ -111,5 +73,16 @@ class HybridAuthFactory implements FactoryInterface
         $requestedName,
         array $options = null
     ) {
-        return $this->createService($container);
-}}
+        $config = $container->get('Config');
+        $url    = $container->get('ViewHelperManager')->get('url');
+        $token  = $container->get('OrgHeiglHybridAuthToken');
+
+        return new HybridAuth(
+            $config['OrgHeiglHybridAuth'],
+            $token,
+            $url
+        );
+
+        return $viewHelper;
+    }
+}

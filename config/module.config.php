@@ -30,6 +30,9 @@
  */
 namespace OrgHeiglHybridAuth;
 
+use OrgHeiglHybridAuth\Service\ViewHelperFactory;
+use OrgHeiglHybridAuth\View\Helper\HybridAuth;
+
 return array(
     'router' => array(
         'routes' => array(
@@ -94,9 +97,12 @@ return array(
         ),
     ),
     'view_helpers' => array(
-        'invokables' => array(
-            'hybridauthinfo' => 'OrgHeiglHybridAuth\View\Helper\HybridAuth',
+        'factories' => array(
+            HybridAuth::class => ViewHelperFactory::class,
         ),
+        'aliases' => [
+            'hybridauthinfo' => HybridAuth::class
+        ]
     ),
     'OrgHeiglHybridAuth' => array(
         'hybrid_auth' => array(

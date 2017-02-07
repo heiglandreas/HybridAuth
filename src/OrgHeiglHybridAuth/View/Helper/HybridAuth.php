@@ -30,6 +30,7 @@
  */
 namespace OrgHeiglHybridAuth\View\Helper;
 
+use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
@@ -48,114 +49,103 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since     05.12.2012
  * @link      http://github.com/heiglandreas/OrgHeiglHybridAuth
  */
-class HybridAuth extends HtmlElement
+class HybridAuth extends AbstractHelper
 {
-    /**
-     * The ViewHelper-Servicemanager
-     *
-     * @var HelperPluginManager $viewHelperManager
-     */
-    protected $viewHelperManager = null;
+    protected $config;
 
-    /**
-     * The Router
-     *
-     * @var MvcEvent $router
-     */
-    protected $mvcEvent = null;
+    protected $token;
 
-    /**
-     * The serviceLocator
-     *
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator = null;
+    protected $route;
 
-    /**
-     * create an instance of the viewhelper
-     *
-     * @param mixed $viewHelperManager
-     */
-    public function __construct(HelperPluginManager $viewHelperManager, MvcEvent $mvcEvent)
+    protected $urlHelper;
+
+    public function __construct($config, $authToken, $urlHelper)
     {
-        $this->viewHelperManager = $viewHelperManager;
-        $this->mvcEvent          = $mvcEvent;
+        $this->config = $config;
+        $this->token  = $authToken;
+        $this->urlHelper = $urlHelper;
     }
-
     /**
      * create a link to either
      *
      * @return void
      */
-    public function __invoke($provider = null)
+    public function __invoke($provider = null, $route = '')
     {
-        $pluginManager = $this->getServiceLocator();
-        $config = $pluginManager->getServiceLocator()->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
+        $route = base64_encode($route);
+        $providers = (array) $this->config['backend'];
+        $urlHelper = $this->urlHelper;
 
-        $token = $this->viewHelperManager->getServiceLocator()->get('OrgHeiglHybridAuthToken');
-
-        $urlHelper = $this->getViewHelper('url');
-        $currentRoute = $this->getCurrentRoute();
-        $providers    = $config['backend'];
-
-        if ($token->isAuthenticated()) {
+        if ($this->token->isAuthenticated()) {
             // Display Logged in information
-            // TODO: This has to be localized
-            $user = sprintf($config['logoffstring'], $token->getName());
-            $link = $urlHelper('hybridauth/logout', array('redirect' => $currentRoute));
-            $link = sprintf($config['link'], $user, $link);
-            return sprintf($config['logoffcontainer'], $link);
+
+            $user = sprintf($this->config['logoffstring'], $this->token->getName());
+            $link = $urlHelper(
+                'hybridauth/logout',
+                ['redirect' => $route]
+            );
+            $link = sprintf($this->config['link'], $user, $link);
+            return sprintf($this->config['logoffcontainer'], $link);
         }
 
-        $backendList = $this->getBackends($providers);
-
-        if (null !== $provider && in_array($provider, $backendList)) {
+        if (null !== $provider && in_array($provider, $providers)) {
             return $urlHelper(
                 'hybridauth/login',
-                array('redirect' => $currentRoute, 'provider' => $provider)
+                array('redirect' => $route, 'provider' => $provider)
             );
         }
 
-        if (1 == count($backendList)) {
+        if (1 == count($providers)) {
             return sprintf(
-                $config['item'],
+                $this->config['item'],
                 sprintf(
-                    $config['link'],
+                    $this->config['link'],
                     sprintf(
-                        $config['loginstring'],
-                        ' using ' . current($backendList)
+                        $this->config['loginstring'],
+                        ' using ' . current($providers)
                     ),
-                    $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => current($backendList)))
+                    $urlHelper(
+                        'hybridauth/login',
+                        [
+                            'redirect' => $route,
+                            'provider' => current($providers),
+                        ]
+                    )
                 ),
-                null
+            null
             );
         }
 
         $xhtml = array();
-        foreach ($backendList as $name => $backend) {
-            $link = $urlHelper('hybridauth/login', array('redirect' => $currentRoute, 'provider' => $backend));
+        foreach ($providers as $name => $backend) {
+            $link = $urlHelper(
+                'hybridauth/login',
+                [
+                    'redirect' => $this->route,
+                    'provider' => $backend
+                ]
+            );
             $xhtml[] = sprintf(
-                $config['item'],
+                $this->config['item'],
                 sprintf(
-                    $config['link'],
+                    $this->config['link'],
                     (is_string($name)?$name:$backend),
                     $link
                 ),
-                $config['itemAttribs']
+                $this->config['itemAttribs']
             );
         }
 
         return sprintf(
-            $config['logincontainer'],
+            $this->config['logincontainer'],
             sprintf(
-                $config['loginstring'],
+                $this->config['loginstring'],
                 ' using'
             ),
             sprintf(
-                $config['itemlist'],
+                $this->config['itemlist'],
                 implode("\n",$xhtml),
-                $config['listAttribs']
+                $this->config['listAttribs']
             )
         );
 
@@ -169,65 +159,11 @@ class HybridAuth extends HtmlElement
     public function getBackends($backends = null)
     {
         if (null === $backends) {
-            $pluginManager = $this->getServiceLocator();
-            $config = $pluginManager->getServiceLocator()->get('Config');
-            $backends = $config['OrgHeiglHybridAuth']['backend'];
+            $backends = $this->config['backend'];
         }
 
         $backends = (array) $backends;
 
-//        foreach ($backends as $item => $value) {
-//            if (is_string($item)) {
-//                continue;
-//            }
-//            $backends[strtolower($value)] = $value;
-//            unset($backends[$item]);
-//        }
-
         return $backends;
-    }
-
-    /**
-     * Get a certain viewHelper
-     *
-     * @param string $helper The name of the helper
-     *
-     * @return ViewHelper
-     */
-    protected function getViewHelper($helper)
-    {
-        return $this->viewHelperManager->get($helper);
-    }
-
-    /**
-     * Get the current route for redirecting
-     *
-     * @return string
-     */
-    protected function getCurrentRoute()
-    {
-        $route = $this->mvcEvent->getRouteMatch()->getMatchedRouteName();
-        return base64_encode($route);
-    }
-
-    /**
-     * Set serviceManager instance
-     *
-     * @param  ServiceLocatorInterface $serviceLocator
-     * @return void
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Retrieve serviceManager instance
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
     }
 }
