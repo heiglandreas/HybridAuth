@@ -112,4 +112,5 @@ class HybridAuthFactory implements FactoryInterface
         array $options = null
     ) {
         return $this->createService($container);
-}}
+    }
+}

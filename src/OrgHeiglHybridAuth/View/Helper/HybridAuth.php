@@ -114,7 +114,7 @@ class HybridAuth extends AbstractHelper
                         ]
                     )
                 ),
-            null
+                null
             );
         }
 
