@@ -30,8 +30,10 @@
  */
 namespace OrgHeiglHybridAuth\View\Helper;
 
+use OrgHeiglHybridAuth\UserToken;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
+use Zend\View\Helper\Url;
 use Zend\View\HelperPluginManager;
 use Zend\Mvc\MvcEvent;
 
@@ -59,7 +61,7 @@ class HybridAuth extends AbstractHelper
 
     protected $urlHelper;
 
-    public function __construct($config, $authToken, $urlHelper)
+    public function __construct($config, UserToken $authToken, Url $urlHelper)
     {
         $this->config = $config;
         $this->token  = $authToken;

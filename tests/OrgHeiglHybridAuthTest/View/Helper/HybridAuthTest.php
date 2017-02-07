@@ -32,38 +32,24 @@
 namespace OrgHeiglHybridAuthTest\View\Helper;
 
 use Mockery as M;
+use OrgHeiglHybridAuth\UserToken;
+use OrgHeiglHybridAuth\View\Helper\HybridAuth;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
+use Zend\View\Helper\Url;
 
 class HybridAuthTest extends \PHPUnit_Framework_TestCase
 {
-    protected $locator = null;
-
-    public function setup()
+    public function testSettingServiceLocators()
     {
-        $serviceLocator = $this->getServiceManager();
-        $serviceLocator->setAllowOverride(true);
-        // replacing connection service with our fake one
-        $serviceLocator->setService('config', '');
+        $token     = M::mock(UserToken::class);
+        $urlHelper = M::mock(Url::class);
 
-        $this->locator = $serviceLocator;
-    }
+        $viewHelper = new HybridAuth([], $token, $urlHelper);
 
-    public function testSEttingServiceLocators()
-    {
-        $pluginManager = M::mock('Zend\View\HelperPluginManager');
-        $mvcEvent = M::mock('Zend\Mvc\MvcEvent');
-        $serviceLocator = $this->locator;
-
-        $viewHelper = new \OrgHeiglHybridAuth\View\Helper\HybridAuth($pluginManager, $mvcEvent);
-
-        $this->assertAttributeEquals($pluginManager, 'viewHelperManager', $viewHelper);
-        $this->assertAttributeEquals($mvcEvent, 'mvcEvent', $viewHelper);
-        $this->assertAttributeEquals(null, 'serviceLocator', $viewHelper);
-        $this->assertNull($viewHelper->setServiceLocator($serviceLocator));
-        $this->assertAttributeEquals($serviceLocator, 'serviceLocator', $viewHelper);
-        $this->assertSame($serviceLocator, $viewHelper->getServiceLocator());
-        $this->assertInstanceof('Zend\ServiceManager\ServiceLocatorInterface', $viewHelper->getServiceLocator());
+        $this->assertAttributeEquals([], 'config', $viewHelper);
+        $this->assertAttributeEquals($token, 'token', $viewHelper);
+        $this->assertAttributeEquals($urlHelper, 'urlHelper', $viewHelper);
     }
 
     /**
@@ -71,14 +57,10 @@ class HybridAuthTest extends \PHPUnit_Framework_TestCase
      */
     public function testGettingBackends($backend, $expected)
     {
-        $pluginManager = M::mock('Zend\View\HelperPluginManager');
-        $mvcEvent = M::mock('Zend\Mvc\MvcEvent');
-        $this->locator->setService('config', array('OrgHeiglHybridAuth' => array('backend' => $backend)));
+        $token     = M::mock(UserToken::class);
+        $urlHelper = M::mock(Url::class);
 
-        $viewHelper = new \OrgHeiglHybridAuth\View\Helper\HybridAuth($pluginManager, $mvcEvent);
-        $viewHelper->setServiceLocator($this->locator);
-
-      //  $this->assertEquals($expected, $viewHelper->getBackends());
+        $viewHelper = new HybridAuth(['backend' => $backend], $token, $urlHelper);
         $this->assertEquals($expected, $viewHelper->getBackends($backend));
 
     }
@@ -90,12 +72,5 @@ class HybridAuthTest extends \PHPUnit_Framework_TestCase
             array(array('backend'), array('backend')),
             array(array('foo', 'bar'), array('foo', 'bar')),
         );
-    }
-
-    protected function getServiceManager()
-    {
-        $serviceManager = new ServiceManager([]);
-
-        return $serviceManager;
     }
 }
