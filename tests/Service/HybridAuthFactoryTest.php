@@ -44,16 +44,11 @@ class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
     {
         $factory = new HybridAuthFactory();
         $this->assertInstanceof(FactoryInterface::class, $factory);
-        $servicemanager = M::mock(ContainerInterface::class);
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';
         $_SERVER['HTTP_HOST']   = 'localhost';
 
         $this->markTestIncomplete('Testing inomplete due to routing issues');
-
-//        $servicemanager->get('router')->addRoute('hybridauth/backend',array('options'=> array('route'=>'test')));
-//        $authInst = $factory->createService($servicemanager);
-//        $this->assertInstanceof('\Hybrid_Auth', $authInst);
     }
 }

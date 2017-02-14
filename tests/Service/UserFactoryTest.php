@@ -115,7 +115,6 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new UserFactory();
         $this->assertInstanceof(FactoryInterface::class, $factory);
         $servicemanager = M::mock(ContainerInterface::class);
-        $user = M::mock(SocialAuthUserWrapper::class);
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
             ->once()

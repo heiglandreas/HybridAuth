@@ -43,18 +43,11 @@ class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
     {
         $factory = new IndexControllerFactory();
         $this->assertInstanceof(FactoryInterface::class, $factory);
-        $servicemanager = M::mock(ContainerInterface::class);
 
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['REQUEST_URI'] = 'http://localhost';
         $_SERVER['HTTP_HOST']   = 'localhost';
 
         $this->markTestIncomplete('Testing inomplete due to routing issues');
-
-//        $controller = $factory->createService($servicemanager);
-//        $this->assertInstanceof('\OrgHeiglHybridAuth\Controller\IndexController', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthSession'), 'session', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthBackend'), 'authenticator', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuth\UserWrapperFactory'), 'userWrapperFactory', $controller);
     }
 }

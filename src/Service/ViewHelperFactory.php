@@ -75,7 +75,5 @@ class ViewHelperFactory implements FactoryInterface
             $token,
             $url
         );
-
-        return $viewHelper;
     }
 }
