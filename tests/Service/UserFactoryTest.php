@@ -36,6 +36,7 @@ use Interop\Container\ContainerInterface;
 use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\Service\UserFactory;
 use Mockery as M;
+use OrgHeiglHybridAuth\SocialAuthUserWrapper;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class UserFactoryTest extends \PHPUnit_Framework_TestCase
@@ -90,7 +91,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new UserFactory();
         $this->assertInstanceof(FactoryInterface::class, $factory);
         $servicemanager = M::mock(ContainerInterface::class);
-        $user = M::mock('OrgHeiglHybridAuth\HybridAuthUserWrapper');
+        $user = M::mock(SocialAuthUserWrapper::class);
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
             ->once()
@@ -114,7 +115,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new UserFactory();
         $this->assertInstanceof(FactoryInterface::class, $factory);
         $servicemanager = M::mock(ContainerInterface::class);
-        $user = M::mock('OrgHeiglHybridAuth\HybridAuthUserWrapper');
+        $user = M::mock(SocialAuthUserWrapper::class);
         $session = M::mock('\Zend\Session\Container')
             ->shouldReceive('offsetExists')
             ->once()

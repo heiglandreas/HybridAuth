@@ -35,13 +35,14 @@ use PHPUnit_Framework_TestCase;
 use OrgHeiglHybridAuth\UserWrapperFactory;
 use Hybridauth\Entity\Profile;
 use Mockery as M;
+use SocialConnect\Common\Entity\User;
 
 class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreationWithKnownUserObject()
     {
         $factory = new UserWrapperFactory();
-        $userObj = new Profile();
+        $userObj = new User();
         $obj = $factory->factory($userObj);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
     }
@@ -49,7 +50,7 @@ class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
     public function testCreationWithUnknownUserObject()
     {
         $factory = new UserWrapperFactory();
-        $userObj = M::mock(Hybridauth\Entity\Profile::class);
+        $userObj = M::mock(User::class);
         $obj = $factory->factory($userObj);
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
         $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);

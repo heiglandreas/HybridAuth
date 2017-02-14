@@ -13,10 +13,10 @@
 [![Latest Stable Version](https://poser.pugx.org/org_heigl/hybridauth/v/stable.png)](https://packagist.org/packages/org_heigl/hybridauth)
 [![Stories in Ready](https://badge.waffle.io/heiglandreas/HybridAuth.png?label=ready)](https://waffle.io/heiglandreas/HybridAuth)  
 
-Use the HybridAuth-Library to create an absolute lightweight Authentication-Layer
-for your ZendFramework2-App
+Use the SocialConnect-Library to create an absolute lightweight Authentication-Layer
+for your ZendFramework3-App
 
-You can login with all [supported SocialNetwork-Logins](http://hybridauth.sourceforge.net/userguide.html).
+You can login with all [supported SocialNetwork-Logins](https://github.com/SocialConnect/auth).
 The network and a user-object holding id, name, mail and language will be stored in the session. If you already have
 SocialNetwork users in your application you can use these to authorize your users.
 
@@ -120,4 +120,7 @@ interfere with your local git-repo (when you use one). The submodule approach ma
 end in a lot of headaches due to the caveats of the submodule-command! I can not provide you with support in that case!
 Alternatively you can fork the project at [github](https://github.com/heiglandreas/OrgHeiglHybridAuth).
 
+### Example Implementation.
 
+There is an example-implementation at https://hybridauth.heigl.org - The 
+sourcecode is on github.
