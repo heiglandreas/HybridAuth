@@ -48,7 +48,7 @@ class SessionFactoryTest extends PHPUnit_Framework_TestCase
                        ->with('Config')
                        ->andReturn(['OrgHeiglHybridAuth' => ['session_name' => 'foo']]);
 
-        $session = $factory->createService($servicemanager);
+        $session = $factory($servicemanager, '');
         $this->assertInstanceof('\Zend\Session\Container', $session);
     }
 }

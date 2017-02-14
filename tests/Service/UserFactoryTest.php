@@ -54,7 +54,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
                  ->mock();
         $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
-        $token = $factory->createService($servicemanager);
+        $token = $factory($servicemanager, '');
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
         $this->assertFalse($token->isAuthenticated());
         $this->assertAttributeEquals(new DummyUserWrapper(), 'user', $token);
@@ -78,7 +78,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(false)->mock();
         $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
-        $token = $factory->createService($servicemanager);
+        $token = $factory($servicemanager, '');
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
         $this->assertFalse($token->isAuthenticated());
         $this->assertAttributeEquals(new DummyUserWrapper(), 'user', $token);
@@ -101,7 +101,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(true, $user, 'twitter')->mock();
         $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
-        $token = $factory->createService($servicemanager);
+        $token = $factory($servicemanager, '');
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
         $this->assertTrue($token->isAuthenticated());
         $this->assertAttributeEquals($user, 'user', $token);
@@ -125,7 +125,7 @@ class UserFactoryTest extends \PHPUnit_Framework_TestCase
             ->andReturn(true, null, null)->mock();
         $servicemanager->shouldReceive('get')->with('OrgHeiglHybridAuthSession')->andReturn($session);
 
-        $token = $factory->createService($servicemanager);
+        $token = $factory($servicemanager, '');
         $this->assertInstanceof('\OrgHeiglHybridAuth\UserToken', $token);
         $this->assertFalse($token->isAuthenticated());
        // $this->assertAttributeEquals('twitter', 'user', $token);
