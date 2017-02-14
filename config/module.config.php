@@ -32,6 +32,10 @@ namespace OrgHeiglHybridAuth;
 
 use OrgHeiglHybridAuth\Service\ViewHelperFactory;
 use OrgHeiglHybridAuth\View\Helper\HybridAuth;
+use SocialConnect\Common\Http\Client\ClientInterface;
+use SocialConnect\Common\Http\Client\Guzzle;
+use SocialConnect\Provider\Session\Session;
+use SocialConnect\Provider\Session\SessionInterface;
 
 return array(
     'router' => array(
@@ -69,11 +73,12 @@ return array(
                         ),
                     ),
                     'backend' => array(
-                        'type' => 'Literal',
+                        'type' => 'Segment',
                         'options' => array(
-                            'route' => '/backend',
+                            'route' => '/backend/:provider[/]',
                             'defaults' => array(
                                 'action' => 'backend',
+                                're3direct' => 'home',
                             ),
                         ),
                     ),
@@ -94,6 +99,8 @@ return array(
         ),
         'invokables' => array(
             'OrgHeiglHybridAuth\UserWrapperFactory' => 'OrgHeiglHybridAuth\UserWrapperFactory',
+            ClientInterface::class => Guzzle::class,
+            SessionInterface::class => Session::class,
         ),
     ),
     'view_helpers' => array(

@@ -81,7 +81,7 @@ class HybridAuth extends AbstractHelper
         if ($this->token->isAuthenticated()) {
             // Display Logged in information
 
-            $user = sprintf($this->config['logoffstring'], $this->token->getName());
+            $user = sprintf($this->config['logoffstring'], $this->token->getDisplayName());
             $link = $urlHelper(
                 'hybridauth/logout',
                 ['redirect' => $route]
@@ -123,7 +123,7 @@ class HybridAuth extends AbstractHelper
             $link = $urlHelper(
                 'hybridauth/login',
                 [
-                    'redirect' => $this->route,
+                    'redirect' => $route,
                     'provider' => $backend
                 ]
             );

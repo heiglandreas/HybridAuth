@@ -31,10 +31,12 @@
 
 namespace OrgHeiglHybridAuth;
 
+use Hybridauth\Entity\Profile;
+use OrgHeiglHybridAuth\UserInterface;
 use SocialConnect\Common\Entity\User;
 
 /**
- * This class works as factory to get an Object implementing the UserInterface
+ * This class works as proxy to the HybridAuth-User-Object
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -44,34 +46,75 @@ use SocialConnect\Common\Entity\User;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class UserWrapperFactory
+class SocialAuthUserWrapper implements UserInterface
 {
-   /**
-    * Create the user-Proxy according to the given User-Object
-    *
-    * @return UserInterface
-    * @throws \UnexpectedValueException
-    */
-    public function factory($userObject)
+    /**
+     * @var \SocialConnect\Common\Entity\User
+     */
+    private $user;
+
+    public function __construct(User $user)
     {
-        switch (get_class($userObject))
-        {
-            case User::class:
-                return new SocialAuthuserWrapper($userObject);
-                break;
-            case 'Hybridauth\\Entity\\Profile':
-            case 'Hybridauth\\Entity\\Twitter\\Profile':
-                $userProxy = new HybridAuthUserWrapper();
-                $userProxy->setUser($userObject);
-                return $userProxy;
-                break;
-            default:
-                return new DummyUserWrapper();
+        $this->user = $user;
+    }
+
+    /**
+     * Get the ID of the user
+     *
+     * @return string
+     */
+    public function getUID()
+    {
+        return $this->user->id;
+    }
+
+    /**
+     * Get the name of the user
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->user->username;
+    }
+
+    /**
+     * Get the eMail-Address of the user
+     *
+     * @return string
+     */
+    public function getMail()
+    {
+        return $this->user->email;
+    }
+
+    /**
+     * Get the language of the user
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return '';
+    }
+
+    /**
+     * Get the display-name of the user.
+     */
+    public function getDisplayName()
+    {
+        if ($this->user->fullname) {
+            return $this->user->fullname;
         }
 
-        throw new \UnexpectedValueException(sprintf(
-            'The given Object could not be found. Found "%s" instead',
-            get_Class($userObject)
-        ));
+        if (! $this->user->firstname && ! $this->user->lastname) {
+            return $this->user->username;
+        }
+
+        if (! $this->user->firstname) {
+            return $this->user->lastname;
+        }
+
+        return $this->user->firstname . ' ' . $this->user->lastname;
     }
 }
