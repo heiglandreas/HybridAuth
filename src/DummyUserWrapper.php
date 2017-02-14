@@ -31,9 +31,6 @@
 
 namespace OrgHeiglHybridAuth;
 
-use Hybridauth\Entity\Profile;
-use OrgHeiglHybridAuth\UserInterface;
-
 /**
  * This class works as proxy to the HybridAuth-User-Object
  *

@@ -32,13 +32,11 @@ namespace OrgHeiglHybridAuth\Service;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
-use \Zend\ServiceManager;
+use OrgHeiglHybridAuth\Controller\IndexController;
+use OrgHeiglHybridAuth\UserWrapperFactory;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use \Zend\Session\Container as SessionContainer;
-use \OrgHeiglHybridAuth\Controller\IndexController;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the session
@@ -53,29 +51,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class IndexControllerFactory implements FactoryInterface
 {
-    /**
-     * Create the service using the configuration from the modules config-file
-     *
-     * @param ServiceLocator $serviceLocator The ServiceLocator
-     *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
-     */
-    public function createService(ContainerInterface $serviceLocator)
-    {
-        $serviceLocator = $serviceLocator->getServiceLocator();
-
-        $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
-        $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
-        $wrapperFactory = $serviceLocator->get('OrgHeiglHybridAuth\UserWrapperFactory');
-
-        $controller = new IndexController();
-        $controller->setSession($session)
-                   ->setAuthenticator($authenticator)
-                   ->setUserWrapperFactory($wrapperFactory);
-        return $controller;
-    }
-
     /**
      * Create an object
      *
@@ -94,6 +69,14 @@ class IndexControllerFactory implements FactoryInterface
         $requestedName,
         array $options = null
     ) {
-        return $this->createService($container);
+        $authenticator  = $container->get('OrgHeiglHybridAuthBackend');
+        $session        = $container->get('OrgHeiglHybridAuthSession');
+        $wrapperFactory = $container->get(UserWrapperFactory::class);
+
+        $controller = new IndexController();
+        $controller->setSession($session)
+                   ->setAuthenticator($authenticator)
+                   ->setUserWrapperFactory($wrapperFactory);
+        return $controller;
     }
 }

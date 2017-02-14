@@ -35,8 +35,6 @@ use Interop\Container\Exception\ContainerException;
 use SocialConnect\Auth\Service;
 use SocialConnect\Common\Http\Client\ClientInterface;
 use SocialConnect\Provider\Session\SessionInterface;
-use Zend\ServiceManager;
-use Hybridauth\Hybridauth;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;

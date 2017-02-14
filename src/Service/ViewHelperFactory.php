@@ -33,13 +33,6 @@ namespace OrgHeiglHybridAuth\Service;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use OrgHeiglHybridAuth\View\Helper\HybridAuth;
-use Zend\EventManager\EventInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\Controller\ControllerManager;
-use Zend\Mvc\MvcEvent;
-use Zend\Router\Http\TreeRouteStack;
-use Zend\Router\Http\RouteMatch;
-use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**

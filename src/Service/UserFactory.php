@@ -34,12 +34,9 @@ use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\UserToken;
-use Zend\ServiceManager;
-use Hybridauth\Hybridauth;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the HybridAuth
@@ -54,53 +51,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class UserFactory implements FactoryInterface
 {
-    /**
-     * Create the service using the configuration from the modules config-file
-     *
-     * @param ServiceLocator $services The ServiceLocator
-     *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
-     */
-    public function createService(ContainerInterface $services)
-    {
-        $session = $services->get('OrgHeiglHybridAuthSession');
-        $user = new DummyUserWrapper();
-        $service = '';
-        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
-            // Display Logged in information
-            $user = $session->offsetGet('user');
-            $service = $session->offsetGet('backend');
-
-        }
-
-        $userToken = new UserToken();
-        $userToken->setService($service)
-                  ->setUser($user);
-
-        return $userToken;
-
-    }
-
-    /**
-     * Get the base URI for the current controller
-     *
-     * @return string
-     */
-    protected function getBackendUrl(ContainerInterface $sl)
-    {
-        $router = $sl->get('router');
-        $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
-
-        $request = $sl->get('request');
-        $basePath = $request->getBasePath();
-        $uri = new \Zend\Uri\Uri($request->getUri());
-        $uri->setPath($basePath);
-        $uri->setQuery(array());
-        $uri->setFragment('');
-        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
-    }
-
     /**
      * Create an object
      *
@@ -119,6 +69,19 @@ class UserFactory implements FactoryInterface
         $requestedName,
         array $options = null
     ) {
-        return $this->createService($container);
+        $session = $container->get('OrgHeiglHybridAuthSession');
+        $user = new DummyUserWrapper();
+        $service = '';
+        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+            // Display Logged in information
+            $user = $session->offsetGet('user');
+            $service = $session->offsetGet('backend');
+        }
+
+        $userToken = new UserToken();
+        $userToken->setService($service)
+                  ->setUser($user);
+
+        return $userToken;
     }
 }

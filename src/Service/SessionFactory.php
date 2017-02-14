@@ -32,12 +32,10 @@ namespace OrgHeiglHybridAuth\Service;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
-use \Zend\ServiceManager;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use \Zend\Session\Container as SessionContainer;
-use \Zend\ServiceManager\Factory\FactoryInterface;
-use \Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Session\Container as SessionContainer;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
  * Create an instance of the session
@@ -52,22 +50,6 @@ use \Zend\ServiceManager\ServiceLocatorInterface;
  */
 class SessionFactory implements FactoryInterface
 {
-    /**
-     * Create the service using the configuration from the modules config-file
-     *
-     * @param ServiceLocator $services The ServiceLocator
-     *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
-     */
-    public function createService(ContainerInterface $serviceLocator)
-    {
-        $config = $serviceLocator->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
-
-        return new SessionContainer($config['session_name']);
-    }
-
     /**
      * Create an object
      *
@@ -86,6 +68,9 @@ class SessionFactory implements FactoryInterface
         $requestedName,
         array $options = null
     ) {
-        return $this->createService($container);
+        $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        return new SessionContainer($config['session_name']);
     }
 }

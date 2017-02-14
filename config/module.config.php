@@ -30,6 +30,11 @@
  */
 namespace OrgHeiglHybridAuth;
 
+use OrgHeiglHybridAuth\Controller\IndexController;
+use OrgHeiglHybridAuth\Service\HybridAuthFactory;
+use OrgHeiglHybridAuth\Service\IndexControllerFactory;
+use OrgHeiglHybridAuth\Service\SessionFactory;
+use OrgHeiglHybridAuth\Service\UserFactory;
 use OrgHeiglHybridAuth\Service\ViewHelperFactory;
 use OrgHeiglHybridAuth\View\Helper\HybridAuth;
 use SocialConnect\Common\Http\Client\ClientInterface;
@@ -37,89 +42,96 @@ use SocialConnect\Common\Http\Client\Guzzle;
 use SocialConnect\Provider\Session\Session;
 use SocialConnect\Provider\Session\SessionInterface;
 
-return array(
-    'router' => array(
-        'routes' => array(
-            'hybridauth' => array(
+return [
+    'router' => [
+        'routes' => [
+            'hybridauth' => [
                 'type'    => 'Literal',
-                'options' => array(
+                'options' => [
                     'route'    => '/authenticate',
-                    'defaults' => array(
+                    'defaults' => [
                         '__NAMESPACE__' => 'OrgHeiglHybridAuth\Controller',
                         'controller' => 'IndexController',
                         'action'     => 'login',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'login' => array(
+                'child_routes' => [
+                    'login' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/login/:provider[/:redirect]',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action'   => 'login',
                                 'redirect' => 'home'
-                            ),
-                        ),
-                    ),
-                    'logout' => array(
+                            ],
+                        ],
+                    ],
+                    'logout' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/logout[/:redirect]',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'logout',
                                 'redirect' => 'home'
-                            ),
-                        ),
-                    ),
-                    'backend' => array(
+                            ],
+                        ],
+                    ],
+                    'backend' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/backend/:provider[/]',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'backend',
-                                're3direct' => 'home',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'controllers' => array(
-        'factories' => array(
-            'OrgHeiglHybridAuth\Controller\IndexController' => 'OrgHeiglHybridAuth\Service\IndexControllerFactory',
-        ),
-    ),
-    'service_manager' => array(
-        'factories' => array(
-            'OrgHeiglHybridAuthSession' => 'OrgHeiglHybridAuth\Service\SessionFactory',
-            'OrgHeiglHybridAuthBackend' => 'OrgHeiglHybridAuth\Service\HybridAuthFactory',
-            'OrgHeiglHybridAuthToken' => 'OrgHeiglHybridAuth\Service\UserFactory',
-        ),
-        'invokables' => array(
-            'OrgHeiglHybridAuth\UserWrapperFactory' => 'OrgHeiglHybridAuth\UserWrapperFactory',
+                                'redirect' => 'home',
+                            ],
+                        ],
+                    ]
+                ],
+            ],
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            IndexController::class => IndexControllerFactory::class,
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
+            'OrgHeiglHybridAuthSession' => SessionFactory::class,
+            'OrgHeiglHybridAuthBackend' => HybridAuthFactory::class,
+            'OrgHeiglHybridAuthToken' => UserFactory::class,
+        ],
+        'invokables' => [
+            UserWrapperFactory::class => UserWrapperFactory::class,
             ClientInterface::class => Guzzle::class,
             SessionInterface::class => Session::class,
-        ),
-    ),
-    'view_helpers' => array(
-        'factories' => array(
+        ],
+    ],
+    'view_helpers' => [
+        'factories' => [
             HybridAuth::class => ViewHelperFactory::class,
-        ),
+        ],
         'aliases' => [
             'hybridauthinfo' => HybridAuth::class
         ]
-    ),
-    'OrgHeiglHybridAuth' => array(
-        'hybrid_auth' => array(
-            'base_url' => 'http://example.com/authenticate/backend',
-            'providers' => array(
-                'Twitter' => array('enabled' => false, 'keys' => array('key' => '', 'secret' => '')),
-            ),
-            'debug_mode' => false,
-            'debug_file' => __DIR__ . '/hybrid_auth.log',
-        ),
+    ],
+    'OrgHeiglHybridAuth' => [
+        'socialAuth' => [
+            'redirectUri' => 'http://localhost:8080/authenticate/backend',
+            'provider' => [
+                'twitter' => [
+                    'applicationId' => '',
+                    'applicationSecret' => '',
+                    'scope' => ['email'],
+                ],
+                'github' => [
+                    'applicationId' => '',
+                    'applicationSecret' => '',
+                    'scope' => ['email'],
+                ],
+            ],
+        ],
         'backend'         => 'Twitter',
 //        'backend'         => array('twitter'),
 //        'backend'         => array('twitter', 'facebook', '...'),
@@ -132,6 +144,5 @@ return array(
         'loginstring'     => 'Login%1$s',
         'listAttribs'     => ' class="dropdown-menu"', // Will be inserted as 2nd parameter into item
         'itemAttribs'     => null, // Will be inserted as 2nd parameter into itemlist
-
-    )
-);
+    ]
+];

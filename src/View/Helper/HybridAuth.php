@@ -32,13 +32,8 @@ namespace OrgHeiglHybridAuth\View\Helper;
 
 use OrgHeiglHybridAuth\UserToken;
 use Zend\View\Helper\AbstractHelper;
-use Zend\View\Helper\AbstractHtmlElement as HtmlElement;
 use Zend\View\Helper\Url;
-use Zend\View\HelperPluginManager;
-use Zend\Mvc\MvcEvent;
-
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * A view helper that either generates a link to a login-widget or a logout-link
@@ -57,8 +52,6 @@ class HybridAuth extends AbstractHelper
 
     protected $token;
 
-    protected $route;
-
     protected $urlHelper;
 
     public function __construct($config, UserToken $authToken, Url $urlHelper)
@@ -70,7 +63,10 @@ class HybridAuth extends AbstractHelper
     /**
      * create a link to either
      *
-     * @return void
+     * @param string $provider The provider to be used
+     * @param string $route    The route to redirect to
+     *
+     * @return string
      */
     public function __invoke($provider = null, $route = '')
     {
