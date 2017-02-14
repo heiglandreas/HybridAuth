@@ -57,7 +57,7 @@ class UserWrapperFactory
         switch (get_class($userObject))
         {
             case User::class:
-                return new SocialAuthuserWrapper($userObject);
+                return new SocialAuthUserWrapper($userObject);
                 break;
             case 'Hybridauth\\Entity\\Profile':
             case 'Hybridauth\\Entity\\Twitter\\Profile':
