@@ -32,6 +32,7 @@ namespace OrgHeiglHybridAuth\Controller;
 
 use Hybridauth\Hybridauth;
 use Hybridauth\Endpoint;
+use SocialConnect\Auth\Service;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container as SessionContainer;
 use OrgHeiglHybridAuth\UserWrapperFactory;
@@ -52,7 +53,7 @@ class IndexController extends AbstractActionController
     /**
      * Stores the HybridAuth-Instance
      *
-     * @var Hybridauth $authenticator
+     * @var Service $authenticator
      */
     protected $authenticator = null;
 
@@ -72,11 +73,11 @@ class IndexController extends AbstractActionController
     /**
      * Set the authenticator
      *
-     * @param Hybrid_Auth $authenticator The Authenticator-Backend
+     * @param Service $authenticator The Authenticator-Backend
      *
      * @return IndexController
      */
-    public function setAuthenticator(Hybridauth $authenticator)
+    public function setAuthenticator(Service $authenticator)
     {
         $this->authenticator = $authenticator;
         return $this;
@@ -113,22 +114,12 @@ class IndexController extends AbstractActionController
      */
     public function loginAction()
     {
-        $provider = $this->params()->fromRoute('provider');
+        $providerName = $this->params()->fromRoute('provider');
+        $this->session->offsetSet('redirect', $this->params()->fromRoute('redirect'));
 
-        try {
-            $backend = $this->authenticator->authenticate($provider);
-            if (! $backend->isAuthorized()) {
-                throw new \UnexpectedValueException('User is not connected');
-            }
-            $profile = $backend->getUserProfile();
-          //  error_log(print_R($this->userWrapperFactory->factory($profile),true));
-            $this->session->offsetSet('authenticated', $backend->isAuthorized());
-            $this->session->offsetSet('user', $this->userWrapperFactory->factory($profile));
-            $this->session->offsetSet('backend', $provider);
-        } catch (\Exception $e) {
-            $this->session->offsetSet('authenticated', false);
-        }
-        return $this->doRedirect();
+        $provider = $this->authenticator->getProvider($providerName);
+
+        return $this->redirectTo($provider->makeAuthUrl());
     }
 
     /**
@@ -138,13 +129,7 @@ class IndexController extends AbstractActionController
     {
         $this->session->offsetSet('authenticated', false);
         $this->session->offsetSet('user', null);
-        if ($Backend = $this->session->offsetGet('backend')) {
-            if (is_object($Backend)) {
-                $Backend->disconnect();
-            } else {
-                $this->session->offsetSet('backend', null);
-            }
-        }
+        $this->session->offsetSet('backend', null);
 
         return $this->doRedirect();
     }
@@ -156,7 +141,17 @@ class IndexController extends AbstractActionController
      */
     protected function doRedirect()
     {
-        $redirect = base64_decode($this->getEvent()->getRouteMatch()->getParam('redirect'));
+        if (! $redirect = $this->session->offsetGet('redirect')) {
+            $redirect = $this->getEvent()->getRouteMatch()->getParam('redirect');
+        }
+
+        $this->session->offsetUnset('redirect');
+        $redirect = base64_decode($redirect);
+
+        if (! $redirect) {
+            $redirect = '/';
+        }
+
         if (preg_match('|://|', $redirect)) {
             $this->redirect()->toUrl($redirect);
         } else {
@@ -165,19 +160,33 @@ class IndexController extends AbstractActionController
         return false;
     }
 
+    public function redirectTo($uri)
+    {
+        $this->redirect()->toUrl($uri);
+    }
+
     /**
      * Call the HybridAuth-Backend
      */
     public function backendAction()
     {
-        try {
+        $providerName = $this->params()->fromRoute('provider');
 
-        $endpoint = new Endpoint();
-        $endpoint->process();
-        } catch(\Exception $e) {
-            //
+        $provider = $this->authenticator->getProvider($providerName);
+        $accessToken = $provider->getAccessTokenByRequestParameters($_GET);
+
+        if (! $accessToken) {
+            $this->session->offsetSet('authenticated', false);
+            $this->session->offsetSet('user', null);
+            $this->session->offsetSet('backend', $providerName);
+
+            return $this->doRedirect();
         }
-        return false;
-    }
 
+        $this->session->offsetSet('authenticated',true);
+        $this->session->offsetSet('user', $this->userWrapperFactory->factory($provider->getIdentity($accessToken)));
+        $this->session->offsetSet('backend', $providerName);
+
+        return $this->doRedirect();
+    }
 }

@@ -31,27 +31,24 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use Interop\Container\ContainerInterface;
 use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\UserWrapperFactory;
-use \Hybridauth\Entity\Profile;
+use \OrgHeiglHybridAuth\Service\SessionFactory;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Mockery as M;
 
-
-class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
+class SessionFactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreationWithKnownUserObject()
+    public function testSessionCreation()
     {
-        $factory = new UserWrapperFactory();
-        $userObj = new Profile();
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
-    }
+        $factory = new SessionFactory();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+        $servicemanager = M::mock(ContainerInterface::class);
+        $servicemanager->shouldReceive('get')
+                       ->with('Config')
+                       ->andReturn(['OrgHeiglHybridAuth' => ['session_name' => 'foo']]);
 
-    public function testCreationWithUnknownUserObject()
-    {
-        $factory = new UserWrapperFactory();
-        $userObj = $this->getMock('Hybridauth\\Entity\\Profile');
-        $obj = $factory->factory($userObj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
-        $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);
+        $session = $factory($servicemanager, '');
+        $this->assertInstanceof('\Zend\Session\Container', $session);
     }
 }

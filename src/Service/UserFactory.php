@@ -30,13 +30,16 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
-use \Zend\ServiceManager;
-use \Zend\Session\Container as SessionContainer;
-use \Zend\ServiceManager\FactoryInterface;
-use \Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use OrgHeiglHybridAuth\DummyUserWrapper;
+use OrgHeiglHybridAuth\UserToken;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Create an instance of the session
+ * Create an instance of the HybridAuth
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -46,21 +49,39 @@ use \Zend\ServiceManager\ServiceLocatorInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class SessionFactory implements FactoryInterface
+class UserFactory implements FactoryInterface
 {
     /**
-     * Create the service using the configuration from the modules config-file
+     * Create an object
      *
-     * @param ServiceLocator $services The ServiceLocator
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
      *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        $config = $serviceLocator->get('Config');
-        $config = $config['OrgHeiglHybridAuth'];
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $session = $container->get('OrgHeiglHybridAuthSession');
+        $user = new DummyUserWrapper();
+        $service = '';
+        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+            // Display Logged in information
+            $user = $session->offsetGet('user');
+            $service = $session->offsetGet('backend');
+        }
 
-        return new SessionContainer($config['session_name']);
+        $userToken = new UserToken();
+        $userToken->setService($service)
+                  ->setUser($user);
+
+        return $userToken;
     }
 }

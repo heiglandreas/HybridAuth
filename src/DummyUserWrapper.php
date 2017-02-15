@@ -22,26 +22,73 @@
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
- * @copyright ©2013-2013 Andreas Heigl
+ * @copyright ©2012-2013 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     11.01.13
- * @link      https://github.com/heiglandreas/
+ * @link      https://github.com/heiglandreas/HybridAuth
  */
 
-namespace OrgHeiglHybridAuthTest;
+namespace OrgHeiglHybridAuth;
 
-use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\Service\SessionFactory;
-
-class SessionFactoryTest extends PHPUnit_Framework_TestCase
+/**
+ * This class works as proxy to the HybridAuth-User-Object
+ *
+ * @category  HybridAuth
+ * @author    Andreas Heigl<andreas@heigl.org>
+ * @copyright ©2012-2013 Andreas Heigl
+ * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
+ * @version   0.0
+ * @since     11.01.13
+ * @link      https://github.com/heiglandreas/HybridAuth
+ */
+class DummyUserWrapper implements UserInterface
 {
-    public function testSessionCreation()
+    /**
+     * Get the ID of the user
+     *
+     * @return string
+     */
+    public function getUID()
     {
-        $factory = new SessionFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
-        $session = $factory->createService($servicemanager);
-        $this->assertInstanceof('\Zend\Session\Container', $session);
+        return '';
+    }
+
+    /**
+     * Get the name of the user
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return '';
+    }
+
+    /**
+     * Get the eMail-Address of the user
+     *
+     * @return string
+     */
+    public function getMail()
+    {
+        return '';
+    }
+
+    /**
+     * Get the language of the user
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return '';
+    }
+
+    /**
+     * Get the display-name of the user.
+     */
+    public function getDisplayName()
+    {
+        return '';
     }
 }

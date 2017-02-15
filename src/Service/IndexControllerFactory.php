@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c)2013-2013 heiglandreas
+ * Copyright (c)2012-2013 heiglandreas
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,18 @@
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
+namespace OrgHeiglHybridAuth\Service;
 
-namespace OrgHeiglHybridAuth;
-
-use Hybridauth\Entity\Profile;
-use OrgHeiglHybridAuth\UserInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use OrgHeiglHybridAuth\Controller\IndexController;
+use OrgHeiglHybridAuth\UserWrapperFactory;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * This class works as proxy to the HybridAuth-User-Object
+ * Create an instance of the session
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -45,73 +49,34 @@ use OrgHeiglHybridAuth\UserInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class HybridAuthUserWrapper extends DummyUserWrapper
+class IndexControllerFactory implements FactoryInterface
 {
     /**
-     * The HybridAuth-User-object
+     * Create an object
      *
-     * @var Hybridauth\Entity\Profile $userProfile
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    protected $user = null;
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $authenticator  = $container->get('OrgHeiglHybridAuthBackend');
+        $session        = $container->get('OrgHeiglHybridAuthSession');
+        $wrapperFactory = $container->get(UserWrapperFactory::class);
 
-    /**
-     * Set the user-object
-     *
-     * @param Hybridauth\Entity\Profile $userProfile The userprofile to use
-     *
-     * @return HybridAuthUserProxy
-     */
-    public function setUser(Profile $user)
-    {
-        $this->user = $user;
-        return $this;
-    }
-
-    /**
-     * Get the ID of the user
-     *
-     * @return string
-     */
-    public function getUID()
-    {
-        return $this->user->getIdentifier();
-    }
-
-    /**
-     * Get the name of the user
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->user->getDisplayName();
-    }
-
-    /**
-     * Get the eMail-Address of the user
-     *
-     * @return string
-     */
-    public function getMail()
-    {
-        return $this->user->getEmail();
-    }
-
-    /**
-     * Get the language of the user
-     *
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return $this->user->getLanguage();
-    }
-
-    /**
-     * Get the display-name of the user.
-     */
-    public function getDisplayName()
-    {
-        return $this->user->getDisplayName();
+        $controller = new IndexController();
+        $controller->setSession($session)
+                   ->setAuthenticator($authenticator)
+                   ->setUserWrapperFactory($wrapperFactory);
+        return $controller;
     }
 }

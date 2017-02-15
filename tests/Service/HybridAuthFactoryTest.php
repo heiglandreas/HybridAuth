@@ -31,34 +31,24 @@
 
 namespace OrgHeiglHybridAuthTest;
 
+use Interop\Container\ContainerInterface;
 use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\HybridAuthUserWrapper;
-use \Hybridauth\Entity\Profile;
+use \Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
+use \OrgHeiglHybridAuth\Service\HybridAuthFactory;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Mockery as M;
 
-
-class HybridAuthUserWrapperTest extends PHPUnit_Framework_TestCase
+class HybridAuthFactoryTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider wrapperProvider
-     */
-    public function testWrapper($property, $proxyMethod, $value)
+    public function testSessionCreation()
     {
-        $proxy = new HybridAuthUserWrapper();
-        $userObj = new Profile();
-        $userObj->$property($value);
-        $proxy->setUser($userObj);
-        $this->assertEquals($value, call_user_func(array($proxy, $proxyMethod)));
+        $factory = new HybridAuthFactory();
+        $this->assertInstanceof(FactoryInterface::class, $factory);
+
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['REQUEST_URI'] = 'http://localhost';
+        $_SERVER['HTTP_HOST']   = 'localhost';
+
+        $this->markTestIncomplete('Testing inomplete due to routing issues');
     }
-
-    public function wrapperProvider()
-    {
-        return array(
-            array('setidentifier', 'getUID', 'test'),
-            array('setdisplayName', 'getName', 'test'),
-            array('setemail', 'getMail', 'test'),
-            array('setlanguage', 'getLanguage', 'test'),
-        );
-    }
-
-
 }

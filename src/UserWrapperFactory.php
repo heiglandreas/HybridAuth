@@ -31,11 +31,10 @@
 
 namespace OrgHeiglHybridAuth;
 
-use Hybridauth\Entity\Profile;
-use OrgHeiglHybridAuth\UserInterface;
+use SocialConnect\Common\Entity\User;
 
 /**
- * This class works as proxy to the HybridAuth-User-Object
+ * This class works as factory to get an Object implementing the UserInterface
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -45,53 +44,34 @@ use OrgHeiglHybridAuth\UserInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class DummyUserWrapper implements UserInterface
+class UserWrapperFactory
 {
-    /**
-     * Get the ID of the user
-     *
-     * @return string
-     */
-    public function getUID()
+   /**
+    * Create the user-Proxy according to the given User-Object
+    *
+    * @return UserInterface
+    * @throws \UnexpectedValueException
+    */
+    public function factory($userObject)
     {
-        return '';
-    }
+        switch (get_class($userObject))
+        {
+            case User::class:
+                return new SocialAuthUserWrapper($userObject);
+                break;
+            case 'Hybridauth\\Entity\\Profile':
+            case 'Hybridauth\\Entity\\Twitter\\Profile':
+                $userProxy = new HybridAuthUserWrapper();
+                $userProxy->setUser($userObject);
+                return $userProxy;
+                break;
+            default:
+                return new DummyUserWrapper();
+        }
 
-    /**
-     * Get the name of the user
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return '';
-    }
-
-    /**
-     * Get the eMail-Address of the user
-     *
-     * @return string
-     */
-    public function getMail()
-    {
-        return '';
-    }
-
-    /**
-     * Get the language of the user
-     *
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return '';
-    }
-
-    /**
-     * Get the display-name of the user.
-     */
-    public function getDisplayName()
-    {
-        return '';
+        throw new \UnexpectedValueException(sprintf(
+            'The given Object could not be found. Found "%s" instead',
+            get_Class($userObject)
+        ));
     }
 }

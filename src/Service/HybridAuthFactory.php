@@ -30,11 +30,14 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
-use OrgHeiglHybridAuth\DummyUserWrapper;
-use OrgHeiglHybridAuth\UserToken;
-use Zend\ServiceManager;
-use Hybridauth\Hybridauth;
-use Zend\ServiceManager\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use SocialConnect\Auth\Service;
+use SocialConnect\Common\Http\Client\ClientInterface;
+use SocialConnect\Provider\Session\SessionInterface;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -48,52 +51,33 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class UserFactory implements FactoryInterface
+class HybridAuthFactory implements FactoryInterface
 {
     /**
-     * Create the service using the configuration from the modules config-file
+     * Create an object
      *
-     * @param ServiceLocator $services The ServiceLocator
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
      *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $services)
-    {
-        $session = $services->get('OrgHeiglHybridAuthSession');
-        $user = new DummyUserWrapper();
-        $service = '';
-        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
-            // Display Logged in information
-            $user = $session->offsetGet('user');
-            $service = $session->offsetGet('backend');
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
 
-        }
-
-        $userToken = new UserToken();
-        $userToken->setService($service)
-                  ->setUser($user);
-
-        return $userToken;
-
-    }
-
-    /**
-     * Get the base URI for the current controller
-     *
-     * @return string
-     */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
-    {
-        $router = $sl->get('router');
-        $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
-
-        $request = $sl->get('request');
-        $basePath = $request->getBasePath();
-        $uri = new \Zend\Uri\Uri($request->getUri());
-        $uri->setPath($basePath);
-        $uri->setQuery(array());
-        $uri->setFragment('');
-        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
+        return new Service(
+            $container->get(ClientInterface::class),
+            $container->get(SessionInterface::class),
+            $config['socialAuth']
+        );
     }
 }

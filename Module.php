@@ -80,7 +80,7 @@ class Module
     	$moduleRouteListener->attach($eventManager);
 
         $servicemanager = $e->getApplication()->getServiceManager();
-        $helperManager  = $servicemanager->get('viewhelpermanager');
+        $helperManager  = $servicemanager->get('ViewHelperManager');
         $router         = $servicemanager->get('Application')->getMvcEvent();
         $helperManager->setFactory('hybridauthinfo', function() use ($helperManager, $router) {
             return new HybridauthViewManager($helperManager, $router);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c)2012-2013 heiglandreas
+ * Copyright (c)2013-2013 heiglandreas
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
- * @copyright ©2012-2013 Andreas Heigl
+ * @copyright ©2013-2013 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     11.01.13
@@ -30,45 +30,50 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
-use \Zend\ServiceManager;
-use \Zend\Session\Container as SessionContainer;
-use \OrgHeiglHybridAuth\Controller\IndexController;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use OrgHeiglHybridAuth\View\Helper\HybridAuth;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Create an instance of the session
+ * Create an instance of the HybridAuth
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
- * @copyright ©2012-2013 Andreas Heigl
+ * @copyright ©2013-2013 Andreas Heigl
  * @license   http://www.opesource.org/licenses/mit-license.php MIT-License
  * @version   0.0
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class IndexControllerFactory implements FactoryInterface
+class ViewHelperFactory implements FactoryInterface
 {
     /**
-     * Create the service using the configuration from the modules config-file
+     * Create an object
      *
-     * @param ServiceLocator $serviceLocator The ServiceLocator
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
      *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        $serviceLocator = $serviceLocator->getServiceLocator();
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
+        $url    = $container->get('ViewHelperManager')->get('url');
+        $token  = $container->get('OrgHeiglHybridAuthToken');
 
-        $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
-        $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
-        $wrapperFactory = $serviceLocator->get('OrgHeiglHybridAuth\UserWrapperFactory');
-
-        $controller = new IndexController();
-        $controller->setSession($session)
-                   ->setAuthenticator($authenticator)
-                   ->setUserWrapperFactory($wrapperFactory);
-        return $controller;
+        return new HybridAuth(
+            $config['OrgHeiglHybridAuth'],
+            $token,
+            $url
+        );
     }
 }

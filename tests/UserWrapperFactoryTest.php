@@ -31,27 +31,28 @@
 
 namespace OrgHeiglHybridAuthTest;
 
-use \PHPUnit_Framework_TestCase;
-use \OrgHeiglHybridAuth\Service\IndexControllerFactory;
+use PHPUnit_Framework_TestCase;
+use OrgHeiglHybridAuth\UserWrapperFactory;
+use Hybridauth\Entity\Profile;
+use Mockery as M;
+use SocialConnect\Common\Entity\User;
 
-class IndexControllerFactoryTest extends PHPUnit_Framework_TestCase
+class UserProxyFactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testSessionCreation()
+    public function testCreationWithKnownUserObject()
     {
-        $factory = new IndexControllerFactory();
-        $this->assertInstanceof('Zend\ServiceManager\FactoryInterface', $factory);
-        $servicemanager = Bootstrap::getServiceManager();
+        $factory = new UserWrapperFactory();
+        $userObj = new User();
+        $obj = $factory->factory($userObj);
+        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
+    }
 
-        $_SERVER['SERVER_NAME'] = 'localhost';
-        $_SERVER['REQUEST_URI'] = 'http://localhost';
-        $_SERVER['HTTP_HOST']   = 'localhost';
-
-        $this->markTestIncomplete('Testing inomplete due to routing issues');
-
-//        $controller = $factory->createService($servicemanager);
-//        $this->assertInstanceof('\OrgHeiglHybridAuth\Controller\IndexController', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthSession'), 'session', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuthBackend'), 'authenticator', $controller);
-//        $this->assertAttributeEquals($servicemanager->get('OrgHeiglHybridAuth\UserWrapperFactory'), 'userWrapperFactory', $controller);
+    public function testCreationWithUnknownUserObject()
+    {
+        $factory = new UserWrapperFactory();
+        $userObj = M::mock(User::class);
+        $obj = $factory->factory($userObj);
+        $this->assertInstanceof('\OrgHeiglHybridAuth\UserInterface', $obj);
+        $this->assertInstanceof('\OrgHeiglHybridAuth\DummyUserWrapper', $obj);
     }
 }

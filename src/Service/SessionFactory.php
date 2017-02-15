@@ -30,13 +30,15 @@
  */
 namespace OrgHeiglHybridAuth\Service;
 
-use Zend\ServiceManager;
-use Hybridauth\Hybridauth;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\Session\Container as SessionContainer;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
- * Create an instance of the HybridAuth
+ * Create an instance of the session
  *
  * @category  HybridAuth
  * @author    Andreas Heigl<andreas@heigl.org>
@@ -46,44 +48,29 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @since     11.01.13
  * @link      https://github.com/heiglandreas/HybridAuth
  */
-class HybridAuthFactory implements FactoryInterface
+class SessionFactory implements FactoryInterface
 {
     /**
-     * Create the service using the configuration from the modules config-file
+     * Create an object
      *
-     * @param ServiceLocator $services The ServiceLocator
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
      *
-     * @see \Zend\ServiceManager\FactoryInterface::createService()
-     * @return Hybrid_Auth
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $services)
-    {
-        $config = $services->get('Config');
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $config = $container->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
 
-        $config['hybrid_auth']['base_url'] = $this->getBackendUrl($services);
-
-
-        $hybridAuth = new Hybridauth($config['hybrid_auth']);
-        return $hybridAuth;
-    }
-
-    /**
-     * Get the base URI for the current controller
-     *
-     * @return string
-     */
-    protected function getBackendUrl(ServiceLocatorInterface $sl)
-    {
-        $router = $sl->get('router');
-        $route = $router->assemble(array(), array('name' => 'hybridauth/backend'));
-
-        $request = $sl->get('request');
-        $basePath = $request->getBasePath();
-        $uri = new \Zend\Uri\Uri($request->getUri());
-        $uri->setPath($basePath);
-        $uri->setQuery(array());
-        $uri->setFragment('');
-        return $uri->getScheme() . '://' . $uri->getHost() . preg_replace('/[\/]+/', '/',  $uri->getPath() . '/' . $route);
+        return new SessionContainer($config['session_name']);
     }
 }
