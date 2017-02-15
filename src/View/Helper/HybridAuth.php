@@ -106,7 +106,7 @@ class HybridAuth extends AbstractHelper
                         'hybridauth/login',
                         [
                             'redirect' => $route,
-                            'provider' => current($providers),
+                            'provider' => strtolower(current($providers)),
                         ]
                     )
                 ),

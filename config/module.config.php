@@ -133,8 +133,8 @@ return [
             ],
         ],
         'backend'         => 'Twitter',
-//        'backend'         => array('twitter'),
-//        'backend'         => array('twitter', 'facebook', '...'),
+//        'backend'         => ['Twitter' => 'twitter'],
+//        'backend'         => ['Twitter' => 'twitter', 'Facebook' => 'facebook', '...'],
         'link'            => '<a class="hybridauth" href="%2$s">%1$s</a>', // Will be either inserted as first parameter into item or simply returned as complete entry
         'item'            => '<li%2$s>%1$s</li>',
         'itemlist'        => '<ul%2$s>%1$s</ul>',
