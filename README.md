@@ -22,7 +22,7 @@ SocialNetwork users in your application you can use these to authorize your user
 
 ## Requirements
 
-* The [SocialConnect-Library](https://github.com/SocialConnect/auth). This lib uses the version 3 which is not (yet) stable!
+* The [SocialConnect-Library](https://github.com/SocialConnect/auth).
 * Zend Framework3 (well, obvious, isn't it?)
 
 ## Usage
@@ -50,7 +50,7 @@ SocialNetwork users in your application you can use these to authorize your user
                 ],
             ],
             'session_name' => 'orgheiglhybridauth',
-            'backend'         => array('Twitter'), // could also be ['Twitter', 'Facebook']
+            'backend'         => ['Twitter' => 'twitter'], // could also be ['Twitter' => 'twitter', 'GitHub' => 'github']
             // 'link'            => '<a class="hybridauth" href="%2$s">%1$s</a>', // Will be either inserted as first parameter into item or simply returned as complete entry
             // 'item'            => '<li%2$s>%1$s</li>',
             // 'itemlist'        => '<ul%2$s>%1$s</ul>',
@@ -68,8 +68,7 @@ SocialNetwork users in your application you can use these to authorize your user
 
     ```php
     <?php
-    $provider = "Twitter";
-    echo $this->hybridauthinfo($provider);
+    echo $this->hybridauthinfo(null, $this->serverUrl(true));
     ?>
     ```
 
