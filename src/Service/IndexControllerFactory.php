@@ -36,7 +36,8 @@ use OrgHeiglHybridAuth\Controller\IndexController;
 use OrgHeiglHybridAuth\UserWrapperFactory;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the session
@@ -72,6 +73,26 @@ class IndexControllerFactory implements FactoryInterface
         $authenticator  = $container->get('OrgHeiglHybridAuthBackend');
         $session        = $container->get('OrgHeiglHybridAuthSession');
         $wrapperFactory = $container->get(UserWrapperFactory::class);
+
+        $controller = new IndexController();
+        $controller->setSession($session)
+                   ->setAuthenticator($authenticator)
+                   ->setUserWrapperFactory($wrapperFactory);
+        return $controller;
+    }
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $authenticator  = $serviceLocator->get('OrgHeiglHybridAuthBackend');
+        $session        = $serviceLocator->get('OrgHeiglHybridAuthSession');
+        $wrapperFactory = $serviceLocator->get(UserWrapperFactory::class);
 
         $controller = new IndexController();
         $controller->setSession($session)

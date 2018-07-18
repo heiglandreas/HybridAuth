@@ -34,8 +34,9 @@ use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Session\Container as SessionContainer;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
 
 /**
  * Create an instance of the session
@@ -69,6 +70,21 @@ class SessionFactory implements FactoryInterface
         array $options = null
     ) {
         $config = $container->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        return new SessionContainer($config['session_name']);
+    }
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
         $config = $config['OrgHeiglHybridAuth'];
 
         return new SessionContainer($config['session_name']);

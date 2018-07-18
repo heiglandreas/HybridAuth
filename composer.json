@@ -14,8 +14,8 @@
     }],
     "require" : {
         "php": "^5.6 || ^7.0",
-        "zendframework/zend-mvc": "^2.5|^3.0",
-        "zendframework/zend-servicemanager": "^2.5|^3.0",
+        "zendframework/zend-mvc": "^2.5",
+        "zendframework/zend-servicemanager": "^2.5",
         "zendframework/zend-session": "^2.7 || ^3.0",
         "zendframework/zend-uri": "^2.5 || ^3.0",
         "zendframework/zend-view": "^2.7 || ^3.0",

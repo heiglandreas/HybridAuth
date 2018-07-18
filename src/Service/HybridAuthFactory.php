@@ -37,7 +37,7 @@ use SocialConnect\Common\Http\Client\ClientInterface;
 use SocialConnect\Provider\Session\SessionInterface;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -77,6 +77,25 @@ class HybridAuthFactory implements FactoryInterface
         return new Service(
             $container->get(ClientInterface::class),
             $container->get(SessionInterface::class),
+            $config['socialAuth']
+        );
+    }
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
+        $config = $config['OrgHeiglHybridAuth'];
+
+        return new Service(
+            $serviceLocator->get(ClientInterface::class),
+            $serviceLocator->get(SessionInterface::class),
             $config['socialAuth']
         );
     }

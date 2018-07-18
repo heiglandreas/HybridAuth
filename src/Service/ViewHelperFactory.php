@@ -33,7 +33,8 @@ namespace OrgHeiglHybridAuth\Service;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use OrgHeiglHybridAuth\View\Helper\HybridAuth;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the HybridAuth
@@ -69,6 +70,26 @@ class ViewHelperFactory implements FactoryInterface
         $config = $container->get('Config');
         $url    = $container->get('ViewHelperManager')->get('url');
         $token  = $container->get('OrgHeiglHybridAuthToken');
+
+        return new HybridAuth(
+            $config['OrgHeiglHybridAuth'],
+            $token,
+            $url
+        );
+    }
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
+        $url    = $serviceLocator->get('ViewHelperManager')->get('url');
+        $token  = $serviceLocator->get('OrgHeiglHybridAuthToken');
 
         return new HybridAuth(
             $config['OrgHeiglHybridAuth'],

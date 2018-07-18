@@ -36,7 +36,8 @@ use OrgHeiglHybridAuth\DummyUserWrapper;
 use OrgHeiglHybridAuth\UserToken;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Create an instance of the HybridAuth
@@ -83,5 +84,31 @@ class UserFactory implements FactoryInterface
                   ->setUser($user);
 
         return $userToken;
+    }
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $session = $serviceLocator->get('OrgHeiglHybridAuthSession');
+        $user = new DummyUserWrapper();
+        $service = '';
+        if ($session->offsetExists('authenticated') && true === $session->offsetGet('authenticated')) {
+            // Display Logged in information
+            $user = $session->offsetGet('user');
+            $service = $session->offsetGet('backend');
+        }
+
+        $userToken = new UserToken();
+        $userToken->setService($service)
+                  ->setUser($user);
+
+        return $userToken;
+
     }
 }
