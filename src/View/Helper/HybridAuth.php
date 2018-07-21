@@ -68,7 +68,7 @@ class HybridAuth extends AbstractHelper
      *
      * @return string
      */
-    public function __invoke($provider = null, $route = '')
+    public function __invoke($provider = null, $route = 'home')
     {
         $route = base64_encode($route);
         $providers = (array) $this->config['backend'];
@@ -77,10 +77,14 @@ class HybridAuth extends AbstractHelper
         if ($this->token->isAuthenticated()) {
             // Display Logged in information
 
+            error_log($route);
             $user = sprintf($this->config['logoffstring'], $this->token->getDisplayName());
             $link = $urlHelper(
                 'hybridauth/logout',
-                ['redirect' => $route]
+                [
+                    'redirect' => $route,
+                    'service' => $this->token->getService(),
+                ]
             );
             $link = sprintf($this->config['link'], $user, $link);
             return sprintf($this->config['logoffcontainer'], $link);
@@ -89,7 +93,11 @@ class HybridAuth extends AbstractHelper
         if (null !== $provider && in_array($provider, $providers)) {
             return $urlHelper(
                 'hybridauth/login',
-                array('redirect' => $route, 'provider' => $provider)
+                [
+                    'redirect' => $route,
+                    'provider' => $provider,
+                    'redirect' => $route,
+                ]
             );
         }
 

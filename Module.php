@@ -79,11 +79,19 @@ class Module
     	$moduleRouteListener = new ModuleRouteListener();
     	$moduleRouteListener->attach($eventManager);
 
-        $servicemanager = $e->getApplication()->getServiceManager();
-        $helperManager  = $servicemanager->get('ViewHelperManager');
-        $router         = $servicemanager->get('Application')->getMvcEvent();
-        $helperManager->setFactory('hybridauthinfo', function() use ($helperManager, $router) {
-            return new HybridauthViewManager($helperManager, $router);
+        $serviceManager = $e->getApplication()->getServiceManager();
+        $helperManager  = $serviceManager->get('ViewHelperManager');
+        $helperManager->setFactory('hybridauthinfo', function() use ($serviceManager) {
+
+            $config = $serviceManager->get('Config');
+            $url    = $serviceManager->get('ViewHelperManager')->get('url');
+            $token  = $serviceManager->get('OrgHeiglHybridAuthToken');
+
+            return new HybridAuthViewManager(
+                $config['OrgHeiglHybridAuth'],
+                $token,
+                $url
+            );
         });
 
     }

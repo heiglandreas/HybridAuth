@@ -70,7 +70,7 @@ return [
                     'logout' => [
                         'type' => 'Segment',
                         'options' => [
-                            'route' => '/logout[/:redirect]',
+                            'route' => '/logout/:service[/:redirect]',
                             'defaults' => [
                                 'action' => 'logout',
                                 'redirect' => 'home'
